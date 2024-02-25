@@ -24,11 +24,6 @@ spec:
         ports:
           - containerPort: ${APP_PORT}
         env:
-        - name: SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: SECRET_KEY
         - name: DB_NAME
           valueFrom:
             secretKeyRef:
@@ -54,71 +49,6 @@ spec:
             secretKeyRef:
               name: "${APP_NAME}-credentials"
               key: DB_PORT
-        - name: SOCIAL_AUTH_FACEBOOK_KEY
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: SOCIAL_AUTH_FACEBOOK_KEY
-        - name: SOCIAL_AUTH_FACEBOOK_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: SOCIAL_AUTH_FACEBOOK_SECRET
-        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
-        - name: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-        - name: EMAIL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: EMAIL_HOST
-        - name: EMAIL_PORT
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: EMAIL_PORT
-        - name: EMAIL_HOST_USER
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: EMAIL_HOST_USER
-        - name: EMAIL_HOST_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: EMAIL_HOST_PASSWORD
-        - name: EMAIL_USE_TLS
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: EMAIL_USE_TLS
-        - name: APPLICATION_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: APPLICATION_CLIENT_ID
-        - name: APPLICATION_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: APPLICATION_CLIENT_SECRET
-        - name: GOOGLE_RECAPTCHA_KEY
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: GOOGLE_RECAPTCHA_KEY
-        - name: GOOGLE_RECAPTCHA_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: "${APP_NAME}-credentials"
-              key: GOOGLE_RECAPTCHA_SECRET
         - name: DEV_URL
           valueFrom:
             secretKeyRef:
@@ -129,6 +59,26 @@ spec:
             secretKeyRef:
               name: "${APP_NAME}-credentials"
               key: DEV_FE_URL
+        - name: REDIS_BROKER_URL
+          valueFrom:
+            secretKeyRef:
+              name: "${APP_NAME}-credentials"
+              key: REDIS_BROKER_URL
+        - name: REDIS_BACKEND_URL
+          valueFrom:
+            secretKeyRef:
+              name: "${APP_NAME}-credentials"
+              key: REDIS_BACKEND_URL
+        - name: FE_LOCAL_URL
+          valueFrom:
+            secretKeyRef:
+              name: "${APP_NAME}-credentials"
+              key: FE_LOCAL_URL
+        - name: FE_DEV_URL
+          valueFrom:
+            secretKeyRef:
+              name: "${APP_NAME}-credentials"
+              key: FE_DEV_URL
         - name: ENVIRONMENT
           value: "${ENVIRONMENT}"
         - name: SERVICE_NAME
