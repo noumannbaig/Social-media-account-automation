@@ -1,0 +1,92 @@
+stages:
+  - python_app_version
+  - build_push_image
+  - deploy
+
+variables:
+  IMAGE_NAME: $CI_REGISTRY_IMAGE/dev
+  APP: avatargroupmgmtservice
+  NAMESPACE: phaza
+
+
+python_app_dev:
+  stage: python_app_version
+  image: python:3.11-alpine
+  environment:
+    name: dev
+  script:
+    - export APP_VERSION=$(python3 -c "from app import __version__; print(__version__)")
+    - export VERSION=$APP_VERSION-$CI_PIPELINE_IID
+    - echo $VERSION > version-file.txt
+    - cat version-file.txt 
+  artifacts:
+    paths:
+    - version-file.txt
+    expire_in: 1 day
+  only:
+    - dev
+  tags:
+    - dev
+
+build_push_image_dev:
+  stage: build_push_image
+  image: gcr.io/kaniko-project/executor:debug
+  environment:
+    name: dev
+  script:
+    - export VERSION=`cat version-file.txt`
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor  --image-fs-extract-retry 8 --push-retry 3 --context $CI_PROJECT_DIR --dockerfile  $CI_PROJECT_DIR/Dockerfile --build-arg CONFIG=$CONFIG --destination $IMAGE_NAME:$VERSION
+  only:
+    - dev
+  tags:
+    - dev
+
+deploy_dev:
+  stage: deploy
+  image: gitlab.phaza.ai:5005/devops/kubectl-docker:v1.16.3
+  variables:
+    ENVIRONMENT: "dev"
+    APP_NAME: ${APP}-${CI_COMMIT_REF_SLUG}
+    APP_PORT: "8080"
+    APP_PORT_CELERY: "8080"
+    APP_LABEL: ${APP}
+    DEPLOY_HOST: ${CI_COMMIT_REF_SLUG}-${APP}.phaza.ai
+    DEPLOY_HOST_CELERY: ${CI_COMMIT_REF_SLUG}-${APP}-celery.phaza.ai
+    NUM_REPLICAS: "1"
+    CPU_LIMIT: "400m"
+    MEMORY_LIMIT: "512Mi"
+    CPU_REQUEST: "400m"
+    MEMORY_REQUEST: "512Mi"
+    READINESS_INITIAL_DELAY_SECONDS: "60"
+    LIVENESS_INITIAL_DELAY_SECONDS: "80"
+    MAXREPLICAS: "1"
+    MINREPLICAS: "1"
+  environment:
+      name: dev
+  before_script:
+    - export VERSION=`cat version-file.txt`
+    - echo $VERSION
+    - export DOCKER_IMAGE_TAG="$IMAGE_NAME:$VERSION"
+  script:
+     - kubectl version
+     - kubectl delete --ignore-not-found=true secret gitlab-auth-${NAMESPACE} -n ${NAMESPACE}
+     - kubectl delete --ignore-not-found=true secret gitlab-auth-devops -n ${NAMESPACE}
+     - kubectl delete --ignore-not-found=true secret gitlab-auth-${NAMESPACE} -n ${NAMESPACE}
+     - kubectl delete --ignore-not-found=true secret secrets-$ENVIRONMENT.yaml -n ${NAMESPACE}
+     - kubectl create secret docker-registry gitlab-auth-${NAMESPACE}  --docker-server=$CI_REGISTRY --docker-username=$KUBE_PULL_USER --docker-password=$KUBE_PULL_PASS -n ${NAMESPACE}
+     - kubectl create secret docker-registry gitlab-auth-devops --docker-server=$CI_REGISTRY --docker-username=$DEVOPS_PULL_USER --docker-password=$DEVOPS_PULL_PASS -n ${NAMESPACE}
+     - cat secrets-$ENVIRONMENT.yaml | envsubst | kubectl delete -n ${NAMESPACE} --ignore-not-found=true -f -
+     - sleep 5
+     - cat secrets-$ENVIRONMENT.yaml | envsubst | kubectl apply -n ${NAMESPACE} -f - 
+     - for f in kubernetes/*.yaml; do envsubst < $f | kubectl apply -n ${NAMESPACE} -f -; done
+     - sleep   $(($LIVENESS_INITIAL_DELAY_SECONDS+20))
+     - kubectl get rs -n ${NAMESPACE} --sort-by=.metadata.creationTimestamp -l app=$APP_LABEL | tail -1 | awk '{ if ($2 != $4) { exit 100 }}'
+  artifacts:
+    paths:
+    - version-file.txt
+    expire_in: 1 day
+  only:
+    - dev
+  tags:
+    - dev

@@ -1,0 +1,14 @@
+# service
+kind: Service
+apiVersion: v1
+metadata:
+  name: "${APP_NAME}"
+spec:
+  selector:
+    app: "${APP_LABEL}"
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    name: tcp
+    port: 80
+    targetPort: ${APP_PORT}
