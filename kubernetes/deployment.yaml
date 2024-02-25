@@ -79,6 +79,11 @@ spec:
             secretKeyRef:
               name: "${APP_NAME}-credentials"
               key: FE_DEV_URL
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: "${APP_NAME}-credentials"
+              key: SECRET_KEY
         - name: ENVIRONMENT
           value: "${ENVIRONMENT}"
         - name: SERVICE_NAME
