@@ -6,7 +6,6 @@ from app.api.avatar_groups import service
 from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.api.commons.api_models import ResponseEnvelope, status
-from app.api.commons.auth.auth_bearer import JWTBearer
 
 from app.api.commons.api_models import (
     GenericFilterParameters,
