@@ -83,7 +83,7 @@ def get_all_avatar_groups(
     status_code=status.HTTP_200_OK,
 )
 def read_AvatarGroup_by_id(
-    id: UUID,
+    id: int,
     session: Session = Depends(get_db),
 ):
     """Endpoint for retrieving single Client info by id."""
