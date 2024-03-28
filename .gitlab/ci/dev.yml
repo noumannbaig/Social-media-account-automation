@@ -5,7 +5,7 @@ stages:
 
 variables:
   IMAGE_NAME: $CI_REGISTRY_IMAGE/dev
-  APP: avatargroupmgmtservice
+  APP: avatarmgmtservice
   NAMESPACE: phaza
 
 
