@@ -1,4 +1,5 @@
 """App config."""
+
 import os
 from dotenv import load_dotenv
 

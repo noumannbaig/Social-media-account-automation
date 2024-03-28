@@ -1,4 +1,5 @@
 """Common models and envelopes"""
+
 # pylint: disable=no-self-argument
 # Pylint disabled for validator decorator
 import uuid
@@ -122,7 +123,7 @@ class ResponseEnvelope(GenericModel, Generic[DataT]):
 
     data: Optional[DataT]
     error: Optional[ResponseError]
-    
+
     pagination: Optional[Pagination]
 
     @validator("error", always=True)

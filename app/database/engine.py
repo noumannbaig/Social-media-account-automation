@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "postgresql://phaza:phaza@37.27.25.194/phazadb"
+SQLALCHEMY_DATABASE_URL = "postgresql://avatar:avatar@37.27.25.194/avatardb"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
@@ -17,5 +17,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-

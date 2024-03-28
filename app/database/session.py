@@ -1,4 +1,5 @@
 """Database session handling."""
+
 from typing import List, Union
 
 from .core import TableBase

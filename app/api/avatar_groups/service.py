@@ -12,9 +12,9 @@ from app.api.commons.api_models import (
     OrderParameters,
     PaginationParameters,
 )
-def create_avatar_groups(
-    db: Session, groups: AvatarGroupBaseInsert
-) -> AvatarGroup:
+
+
+def create_avatar_groups(db: Session, groups: AvatarGroupBaseInsert) -> AvatarGroup:
     """Create ContactUs entity.
     Args:
         session (Session): Current SQLAlchemy session

@@ -1,5 +1,6 @@
 """Setup for base model and database connection used by all defined api_models.
 """
+
 import uuid
 
 from sqlalchemy import Column, DateTime, text
@@ -13,4 +14,9 @@ class TableBase:
     """Base model which defines common attributes that
     should be inherited by all database api_models."""
 
-    creation_date = Column(DateTime, nullable=False, server_default=text('LOCALTIMESTAMP'), comment='time of record creation')
+    creation_date = Column(
+        DateTime,
+        nullable=False,
+        server_default=text("LOCALTIMESTAMP"),
+        comment="time of record creation",
+    )

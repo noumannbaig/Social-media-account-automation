@@ -1,4 +1,5 @@
 """Error handler definitions and overwrites."""
+
 import uuid
 from datetime import datetime, timezone
 
@@ -29,6 +30,7 @@ from app.api.commons.middlewares.error_handler.exceptions import (
     CapticsException,
 )
 
+
 def add_exception_handlers(app: FastAPI) -> None:
     """Add exception handlers to app.
 
@@ -55,8 +57,6 @@ def add_exception_handlers(app: FastAPI) -> None:
             details=jsonable_encoder(exc.errors()),
             status=ErrorStatus.INVALID_ARGUMENT,
         )
-
-        
 
         return JSONResponse(
             status_code=error.code,
@@ -131,7 +131,7 @@ def add_exception_handlers(app: FastAPI) -> None:
             details=[error_status[1]],
             status=error_status[0],
         )
-        
+
         return JSONResponse(
             status_code=error.code,
             content=jsonable_encoder(ResponseEnvelope(error=error), exclude_none=True),
@@ -157,7 +157,6 @@ def add_exception_handlers(app: FastAPI) -> None:
             status=ErrorStatus.NOT_FOUND,
             details=details,
         )
-
 
         return JSONResponse(
             status_code=error.code,
@@ -186,7 +185,6 @@ def add_exception_handlers(app: FastAPI) -> None:
             details=[error_detail],
         )
 
-
         return JSONResponse(
             status_code=error.code,
             content=jsonable_encoder(ResponseEnvelope(error=error), exclude_none=True),
@@ -213,7 +211,6 @@ def add_exception_handlers(app: FastAPI) -> None:
             status=ErrorStatus.FAILED_PRECONDITION,
             details=[error_detail],
         )
-
 
         return JSONResponse(
             status_code=error.code,
@@ -242,7 +239,6 @@ def add_exception_handlers(app: FastAPI) -> None:
             details=[error_detail],
         )
 
-
         return JSONResponse(
             status_code=error.code,
             content=jsonable_encoder(ResponseEnvelope(error=error), exclude_none=True),
@@ -268,7 +264,6 @@ def add_exception_handlers(app: FastAPI) -> None:
             status=ErrorStatus.INVALID_ARGUMENT,
             details=[err.args[0]],
         )
-
 
         return JSONResponse(
             status_code=error.code,

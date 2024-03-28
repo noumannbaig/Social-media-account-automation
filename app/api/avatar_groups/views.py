@@ -1,8 +1,8 @@
-from fastapi import FastAPI,HTTPException,APIRouter,Depends,Body,Response
+from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Response
 from uuid import UUID
 from typing import List
-from app.api.avatar_groups.api_models import AvatarGroupResponse,AvatarGroupBaseInsert
-from app.api.avatar_groups import service 
+from app.api.avatar_groups.api_models import AvatarGroupResponse, AvatarGroupBaseInsert
+from app.api.avatar_groups import service
 from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.api.commons.api_models import ResponseEnvelope, status
@@ -14,23 +14,22 @@ from app.api.commons.api_models import (
     PaginationParameters,
     ResponseEnvelope,
 )
+
 router = APIRouter()
 
 
 @router.post(
-    
-    path = "",
+    path="",
     response_model=ResponseEnvelope,
     operation_id="createAvatarGroup",
     summary="Create AvatarGroup   Data.",
     status_code=status.HTTP_201_CREATED,
-    
 )
 def create(
     db: Session = Depends(get_db),
-    client:AvatarGroupBaseInsert=Body(...),
+    client: AvatarGroupBaseInsert = Body(...),
 ):
-    AvatarGroup_response= service.create_avatar_groups(db,client)
+    AvatarGroup_response = service.create_avatar_groups(db, client)
     response_data = AvatarGroupResponse.from_orm(AvatarGroup_response)
     AvatarGroup_response = ResponseEnvelope(data=response_data)
     return AvatarGroup_response
@@ -43,7 +42,6 @@ def create(
     operation_id="listAvatarGroup",
     summary="Retrieve list of  Data.",
     status_code=status.HTTP_200_OK,
-
 )
 def get_all_avatar_groups(
     session: Session = Depends(get_db),
@@ -74,6 +72,7 @@ def get_all_avatar_groups(
     )
     return response
 
+
 @router.get(
     path="/{id}",
     response_model=ResponseEnvelope,
@@ -95,6 +94,7 @@ def read_AvatarGroup_by_id(
     response = ResponseEnvelope[AvatarGroupResponse](data=response_data)
 
     return response
+
 
 @router.delete(
     path="/{id}",
@@ -128,9 +128,7 @@ def update_AvatarGroup__(
 ):
     """Endpoint for updating single AvatarGroup   Data by id."""
 
-    response = service.update_avatar_group(
-        session, id, AvatarGroup_update
-    )
-    response_data=AvatarGroupResponse.from_orm(response)
+    response = service.update_avatar_group(session, id, AvatarGroup_update)
+    response_data = AvatarGroupResponse.from_orm(response)
     response = ResponseEnvelope(data=response_data)
     return response
