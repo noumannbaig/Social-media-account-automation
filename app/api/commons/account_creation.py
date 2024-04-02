@@ -30,6 +30,8 @@ from urllib.parse import quote
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from fake_useragent import UserAgent
+
 def create_gmail_account(
     
     your_first_name,
@@ -122,24 +124,79 @@ def create_gmail_account(
         "userName": "s0I6x7P090XXBD40",
         "password": "9AhOmAaN08U00XKY_country-us",
     },
+    # {
+    #     "ip": "185.130.105.109",
+    #     "port": 10002,
+    #     "country": "USA",
+    #     "countryCode": "US",
+    #     "userName": "5ehlzv7ul147exdffvan3pu",
+    #     "password": "RNW78Fm5",
+    # },
+    
     {
-        "ip": "185.130.105.109",
-        "port": 10002,
-        "country": "USA",
-        "countryCode": "US",
-        "userName": "5ehlzv7ul147exdffvan3pu",
-        "password": "RNW78Fm5",
-    },
-    {
-        "ip": "geo.iproyal.com",
-        "port": 12321,
+        "ip": "167.235.26.46",
+        "port": 11200,
         "country": "USA",
         "countryCode": "US",
         "userName": "s0I6x7P090XXBD40",
-        "password": "9AhOmAaN08U00XKY_country-us",
+        "password": "9AhOmAaN08U00XKY_country-us_state-california",
     },
-    
-    
+    # {
+    #     "ip": "91.239.130.17",
+    #     "port": 44443,
+    #     "country": "USA",
+    #     "countryCode": "US",
+    #     "userName": "mr33386VXjx",
+    #     "password": "MD0tmnCaTm_country-us_session-stgkc31k_lifetime-5m",
+    # },
+    # {
+    #     "ip": "185.130.105.109",
+    #     "port": 10000,
+    #     "country": "USA",
+    #     "countryCode": "US",
+    #     "userName": "p56svt44x2eft0d9z4vfjw3",
+    #     "password": "RNW78Fm5",
+    # },
+    # {
+    #     "ip": "185.130.105.109",
+    #     "port": 10000,
+    #     "country": "USA",
+    #     "countryCode": "US",
+    #     "userName": "4zouumuibd2fpeo7c6vltbw",
+    #     "password": "RNW78Fm5",
+    # },
+     {
+        "ip": "51.159.149.67",
+        "port": 10000,
+        "country": "USA",
+        "countryCode": "US",
+        "userName": "geonode_RCKrPAocFN",
+        "password": "bc101ce5-1198-4176-af3e-dbc17510554e",
+    },
+    {
+        "ip": "23.109.113.236",
+        "port": 9000,
+        "country": "USA",
+        "countryCode": "US",
+        "userName": "8ZiIPeu5FvocK47s",
+        "password": "wifi;us;;;",
+    },
+    {
+        "ip": "23.109.113.236",
+        "port": 9000,
+        "country": "USA",
+        "countryCode": "US",
+        "userName": "HjQDRTvBF9geWmQb",
+        "password": "wifi;us;;;",
+    },
+    {
+        "ip": "us.smartproxy.com",
+        "port": 10001,
+        "country": "USA",
+        "countryCode": "US",
+        "userName": "sprska2hoe",
+        "password": "0Iy6oxisu0=LRN5bal",
+    },
         ]
         # URL-encode username and password
         
@@ -148,7 +205,7 @@ def create_gmail_account(
 
         # Choose a random proxy from the list
         proxy = random.choice(proxies)
-        #proxy=proxies[9]
+        proxy=proxies[0]
         proxy_string = f"{proxy['ip']}:{proxy['port']}"
         
         userName = proxy["userName"]
@@ -162,13 +219,14 @@ def create_gmail_account(
             "proxy": {
                 "http": f"http://{userName}:{password}@{ip}:{port}",
                 "https": f"https://{userName}:{password}@{ip}:{port}",
-                "no_proxy": "localhost,127.0.0.1",
+                "no_proxy": "*.soax.com, localhost, 127.0.0.1,*.froxy.com",
             }
         }
 
         # Configure Chrome options for headless mode and to prevent detection
+        user_agent = UserAgent(browsers=['chrome'])
         chrome_options = Options()
-        
+
         # chrome_options.add_argument("--headless")
         # chrome_options.add_argument("--no-sandbox")
         # chrome_options.add_argument("--disable-dev-shm-usage")
@@ -179,6 +237,8 @@ def create_gmail_account(
         # # Add additional arguments to prevent detection
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        random_user_agent = user_agent.random
+        chrome_options.add_argument(f'user-agent={random_user_agent}')
         driver = webdriver.Chrome(
             options=chrome_options,
             seleniumwire_options=auth_options
@@ -401,7 +461,19 @@ def create_gmail_account(
                 sms=get_sms_v2(phone_number['request_id'])
 
                 if sms =="":
+                    try:
+                        # Wait for the button to be clickable
+                        get_new_code_button = WebDriverWait(driver, 10).until(
+                            EC.element_to_be_clickable((By.CLASS_NAME, "LgbsSe"))
+                        )
 
+                        # Click the button
+                        get_new_code_button.click()
+
+                        # Optionally, close the driver after operation is complete
+                        # driver.quit()
+                    except Exception as e:
+                        print("Error:", e)
                     # sms=get_sms_v2(phone_number['request_id'])
                     # if sms=="":
                     continue
@@ -642,8 +714,15 @@ def create_gmail_account(
         except Exception as e:
             pass
 
+        # try:
+        #         button=WebDriverWait(driver, 10).until(
+        #         EC.element_to_be_clickable((By.CSS_SELECTOR, "[jsname='V67aGc']")))
+        #         # button = driver.find_element(By.CSS_SELECTOR, "[jsname='V67aGc']")
+        #         button.click()
+        # except Exception as e:
+        #     pass
         
-       
+
 
         # try:
         #     password_field = wait.until(
@@ -707,44 +786,42 @@ def create_gmail_account(
                     input_field.send_keys(phone_number['number'])
                 except Exception as e:
                     pass
+                # try:
+                    
+                #     # Find the phone number input element by its id or other attributes
+                #     phone_input = driver.find_element(By.ID, 'c51')  # You'd replace 'c51' with the actual ID or other selector of the input
+
+                #     # Send the phone number to the input
+                #     phone_input.send_keys(phone_number)
+                except :
+                    pass
+        
+        
                 
                 try:
                     next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
                     next_button.click()
                 except Exception as e:
                     pass
-                try:
-                    # This XPath looks for a <span> element with text "Next" inside a div with specific class attributes
-                    next_button = driver.find_element(By.XPATH, "//span[contains(text(), 'Next')]/ancestor::div[contains(@class, 'U26fgb O0WRkf oG5Srb HQ8yf C0oVfc') and not(contains(@style, 'display: none'))]")
-                    next_button.click()
-                    print("Next button clicked successfully!")
-                except Exception as e:
-                    print("Error finding or clicking the Next button:", e)
+                # try:
+                #     # This XPath looks for a <span> element with text "Next" inside a div with specific class attributes
+                #     next_button = driver.find_element(By.XPATH, "//span[contains(text(), 'Next')]/ancestor::div[contains(@class, 'U26fgb O0WRkf oG5Srb HQ8yf C0oVfc') and not(contains(@style, 'display: none'))]")
+                #     next_button.click()
+                #     print("Next button clicked successfully!")
+                # except Exception as e:
+                #     print("Error finding or clicking the Next button:", e)
 
                 except: 
                     pass
                 try:
-                    error_message = driver.find_element(
-                        By.XPATH, "//div[contains(@class, 'jPtpFe')]"
-                    )
+                    error_message= driver.find_element(By.XPATH,"//div[contains(@class, 'dEOOab') and contains(@class, 'RxsGPe') and contains(text(), 'Invalid number, try again.')]")
                     if error_message and error_message.is_displayed():
                         print("Error message displayed. Retrying...")
                         time.sleep(2)  # Add a delay before retrying
                         continue
-                except:
-                    pass
-                try:
-                    error_message = driver.find_element(
-                        By.XPATH, "//div[contains(@class, 'Ekjuhf')]"
-                    )
-                    if error_message and error_message.is_displayed():
-                        print("Error message displayed. Retrying...")
-                        time.sleep(2)  # Add a delay before retrying
-                        continue
-                except:
+                except Exception as e:
                     pass
 
-                
                 # while True:
                     #sms = get_activation(activationId)
                 sms=get_sms_v2(phone_number['request_id'])
@@ -779,6 +856,7 @@ def create_gmail_account(
                 pass
         except Exception as e:
             pass
+        
 
         try:
         # Find the "Turn on" button by its class name

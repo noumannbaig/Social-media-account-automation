@@ -150,7 +150,7 @@ def get_sms_v2(request_id: int):
         sms= response.json()
         try:
             if sms['error_code'] == "wait_sms":
-                time.sleep(15)
+                time.sleep(10)
                 count_status=count_status+1
                 continue
         except Exception as e:

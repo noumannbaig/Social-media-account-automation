@@ -375,7 +375,7 @@ def generate_users_v2(
 
             bio_response = openai.Completion.create(
                 engine="gpt-3.5-turbo-instruct-0914",
-                prompt=f"Write a short bio for a {gender_entity.desc_en} named {first_name} interested in {group_entity.groupDesc}:",
+                prompt=f"Write a short {request.bio_type} bio for a {gender_entity.desc_en} named {first_name} interested in {group_entity.groupDesc}:",
                 max_tokens=50,
             )
             bio = bio_response.choices[0].text.strip()

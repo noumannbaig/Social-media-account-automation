@@ -1,3 +1,4 @@
+import datetime
 from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Query, Response
 from uuid import UUID
 from typing import List
@@ -88,6 +89,7 @@ def get_all_avatar(
     )
     response_data_list=[]
     for elem in response:
+        # elem.birthdate= datetime(elem.birthdate)
         response_data = AvatarResponse.from_orm(elem)
         response_data.a_gender=elem.gender.desc_en
         response_data.a_avatar_group=elem.avatar_group.group_name
@@ -132,7 +134,15 @@ def get_all_avatar_by_scheduler(
         scheduler_no
     )
 
-    response_data = [AvatarResponse.from_orm(elem) for elem in response]
+    response_data_list=[]
+    for elem in response:
+        response_data = AvatarResponse.from_orm(elem)
+        response_data.a_gender=elem.gender.desc_en
+        response_data.a_avatar_group=elem.avatar_group.group_name
+        response_data.a_country=elem.country.desc_en
+        response_data.a_relationship_status=elem.relationship_status.desc_en
+        response_data.a_nationality=elem.nationality.desc_en
+        response_data_list.append(response_data)
 
     response = ResponseEnvelope[List[AvatarResponse]](
         data=response_data,
@@ -268,8 +278,8 @@ def generate_user(
     # Now, pass the model instance directly to your service layer
     try:
         initialize_scheduler=initiate_avatar_generation(session,request_data.dict())
-        response_data = service.generate_users_v2(session,request_data )
-        return {"data": response_data}
+        # response_data = service.generate_users_v2(session,request_data )
+        return ResponseEnvelope(data=initialize_scheduler)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

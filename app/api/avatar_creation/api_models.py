@@ -2,7 +2,7 @@ import uuid
 import re
 from click import UUID
 from pydantic import BaseModel, validator, EmailStr
-from datetime import datetime
+from datetime import date, datetime
 from enum import Enum
 from app.api.commons.api_models import to_camel
 from typing import Optional
@@ -13,7 +13,7 @@ class AvatarBase(BaseModel):
 
     first_name: str
     last_name: str
-    # birthdate: datetime
+    birthdate: date
     job_title: Optional[str]
     a_gender: Optional[str]
     a_relationship_status: Optional[str]
@@ -96,12 +96,19 @@ class AvatarGenerate(BaseModel):
     nationality: int 
     language: int 
     gender: int 
+    bio_type: str
     style_id: str 
     age:list[int]
-    # @validator('age', each_item=True)
-    # def check_year(cls, v):
-    #     if len(str(v)) != 4:
-    #         raise ValueError('Each year must be a 4-digit number')
-    #     if not 1930 <= v <= 2099:  # Assuming valid years range from 1900 to 2099
-    #         raise ValueError('Year must be between 1900 and 2099')
-    #     return v
+
+
+class AvatarDashbaord(BaseModel):
+    number_of_avatars: int 
+    idle: int 
+    busy: int 
+
+
+class ScheduleAvatarDashbaord(BaseModel):
+    number_of_avatars: int 
+    email_availibilty: int 
+    platform_availabity: int
+    errors:int

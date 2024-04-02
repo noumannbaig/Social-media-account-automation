@@ -22,6 +22,7 @@ from app.api.avatar_creation.db_models import (
     Platform,
     RelationshipStatuses,
 )
+from app.api.commons.generate_profile_picture import update_profile_picture
 from app.database.session import get_db
 
 from app.api.avatar_creation.service import generate_users_v2, get_avatars_by_scheduler_no, get_avatars_platforms_by_scheduler_no
@@ -110,7 +111,7 @@ def initiate_avatar_generation(db: Session, params: dict):
             # Other fields like `created_by` can be set according to the context
         )
         update_session(scheduler_param, session=db)
-    process_scheduler_tasks(db,scheduler)
+    #process_scheduler_tasks(db,scheduler)
     return {"message": "Avatar generation initiated", "scheduler_id": scheduler.id}
 
 
@@ -120,8 +121,11 @@ def handle_task_code(db: Session,task_code: str, scheduler: Schedulers,avatar_ge
         avatar_profiles=generate_users_v2(db,avatar_generate_data,scheduler)
         pass
     elif task_code == "GenerateAvatarPhoto":
-        # Add the actual implementation for generating the avatar photo
-        pass
+        for user in users:
+            profile_pic=update_profile_picture(user.id,21,user.bio)
+            user.photo=profile_pic['profile_picture_url']
+            update_session(user,session=db)
+            
     elif task_code == "GenerateAvatarEmail":
         # Add the actual implementation for generating the avatar email
         for user in users:
@@ -197,30 +201,39 @@ def process_scheduler_tasks(db: Session, scheduler: Schedulers):
 
 def run_avatar_generation_scheduler():
     # Find All Pending Schedulers
-    db=get_db()
-    pending_schedulers = db.query(Schedulers).filter(Schedulers.scheduler_status_id == db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Pending").first().id).all()
+    db = next(get_db())
+    try:
+        pending_schedulers = db.query(Schedulers).filter(
+            Schedulers.scheduler_status_id == db.query(SchedulerStatuses).filter(
+                SchedulerStatuses.code == "Pending"
+            ).first().id
+        ).all()
+        print("schedulers to process.",pending_schedulers)
 
-    if not pending_schedulers:
-        return "No schedulers to process."
+        if not pending_schedulers:
+            print("No schedulers to process.")
+            return "No schedulers to process."
 
-    for scheduler in pending_schedulers:
-        # Update Scheduler Status to Running
-        scheduler_status_running = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Running").first()
-        scheduler.scheduler_status_id = scheduler_status_running.id
-        scheduler.start_time = datetime.now()
-        update_session(scheduler,db)
-        process_scheduler_tasks(db, scheduler)
+        for scheduler in pending_schedulers:
+            # Update Scheduler Status to Running
+            scheduler_status_running = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Running").first()
+            scheduler.scheduler_status_id = scheduler_status_running.id
+            scheduler.start_time = datetime.now()
+            update_session(scheduler,db)
+            process_scheduler_tasks(db, scheduler)
 
-        # Update Scheduler Status to Completed or Failed based on the tasks outcomes
-        if all(task.scheduler_task_status_id == db.query(SchedulerTaskStatuses).filter(SchedulerTaskStatuses.code == "Completed").first().id for task in scheduler.scheduler_tasks):
-            scheduler_status_completed = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Completed").first()
-            scheduler.scheduler_status_id = scheduler_status_completed.id
-        else:
-            scheduler_status_failed = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Failed").first()
-            scheduler.scheduler_status_id = scheduler_status_failed.id
+            # Update Scheduler Status to Completed or Failed based on the tasks outcomes
+            if all(task.scheduler_task_status_id == db.query(SchedulerTaskStatuses).filter(SchedulerTaskStatuses.code == "Completed").first().id for task in scheduler.scheduler_tasks):
+                scheduler_status_completed = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Completed").first()
+                scheduler.scheduler_status_id = scheduler_status_completed.id
+            else:
+                scheduler_status_failed = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Failed").first()
+                scheduler.scheduler_status_id = scheduler_status_failed.id
 
-        scheduler.end_time = datetime.now()
-        db.commit()
+            scheduler.end_time = datetime.now()
+            db.commit()
+    finally:
+        db.close()
 
     return "Avatar generation schedulers processed."
 

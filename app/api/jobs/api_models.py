@@ -51,3 +51,11 @@ class SchedulerTaskResponse(BaseModel):
         allow_population_by_field_name = True
         alias_generator = to_camel
         orm_mode = True
+
+
+class SchedulerDashboard(BaseModel):
+    total_jobs:int
+    completed:int
+    pending:int
+    error:int
+    failed:int
