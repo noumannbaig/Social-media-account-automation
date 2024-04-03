@@ -29,13 +29,13 @@ api_router.include_router(
     avatar_group_router, prefix="/avatar-groups", tags=["Avatar Groups"]
 )
 api_router.include_router(
-    avatar_creation_router, prefix="/avatar-creation", tags=["Avatar Creation"]
+    avatar_creation_router, prefix="/avatar-management", tags=["Avatar Creation"]
 )
 api_router.include_router(
     look_ups, prefix="/look-ups", tags=["Look ups"]
 )
 api_router.include_router(
-    jobs, prefix="/jobs", tags=["Jobs"]
+    jobs, prefix="/schedulers", tags=["Schedulers"]
 )
 
 
@@ -55,12 +55,14 @@ app.add_middleware(
 async def Test():
     return {"message": "Server Running Properly"}
 
-@app.on_event("startup")
-def start_scheduler():
-    scheduler = BackgroundScheduler(timezone=utc)
-    scheduler.add_job(run_avatar_generation_scheduler, 'interval', hours=1)
-    scheduler.start()
-    print("Scheduler started...")
+# @app.on_event("startup")
+# def start_scheduler():
+#     scheduler = BackgroundScheduler(timezone=utc)
+#     scheduler.add_job(run_avatar_generation_scheduler, 'interval', minutes=5)
+#     scheduler.add_job(run_avatar_generation_scheduler, 'interval', hours=1)
+
+#     scheduler.start()
+#     print("Scheduler started...")
 app.include_router(api_router)
 
 add_exception_handlers(app)

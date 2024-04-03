@@ -9,7 +9,11 @@ OPENAI_API_KEY = "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"
 VYRO_API_TOKEN = "vk-JsWBLsMOPeEGpOH239dDMsqvbshykT4CAmA1l1zjXt7iGx"
 BUCKET_NAME = "phazaavatars"
 openai.api_key = OPENAI_API_KEY
-s3_client = boto3.client('s3')
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id ='AKIAYFBZQ5G44JVDG42C',
+aws_secret_access_key='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',
+)
 
 
 def update_profile_picture(
@@ -19,7 +23,7 @@ def update_profile_picture(
 ):
     try:
         
-        profile_picture_url = generate_profile_picture(bio, style_id)
+        profile_picture_url = generate_profile_picture(avatar_id,bio, style_id)
         return {"message": "Profile picture updated successfully", "profile_picture_url": profile_picture_url}
     except Exception as e:
         return None

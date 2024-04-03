@@ -119,7 +119,6 @@ def handle_task_code(db: Session,task_code: str, scheduler: Schedulers,avatar_ge
     users=get_avatars_by_scheduler_no(db,scheduler.scheduler_no)
     if task_code == "GenerateAvatarProfile":
         avatar_profiles=generate_users_v2(db,avatar_generate_data,scheduler)
-        pass
     elif task_code == "GenerateAvatarPhoto":
         for user in users:
             profile_pic=update_profile_picture(user.id,21,user.bio)
@@ -138,8 +137,8 @@ def handle_task_code(db: Session,task_code: str, scheduler: Schedulers,avatar_ge
                     count=count+1
                     if retry_response_gmail is None:
                         continue
-            if response_gmail['password'] != '':
-                username.app_password=response_gmail['password']
+            if response_gmail !=None:
+                # username.app_password=response_gmail['password']
                 username.is_valid=True
                 status=db.query(EmailStatuses).filter(EmailStatuses.code=="Created").first()
                 username.email_status_id=status.id
@@ -166,6 +165,11 @@ def handle_task_code(db: Session,task_code: str, scheduler: Schedulers,avatar_ge
 
 def process_scheduler_tasks(db: Session, scheduler: Schedulers):
     # Find Scheduler Tasks ordered by task sequence
+    scheduler_running = db.query(SchedulerStatuses).filter(SchedulerStatuses.code == "Running").first()
+
+    scheduler.start_time= datetime.now()
+    scheduler.scheduler_status_id=scheduler_running.id,
+    update_session(scheduler,db)
     tasks = db.query(SchedulerTasks).filter(SchedulerTasks.scheduler_id == scheduler.id).order_by(SchedulerTasks.task_seq).all()
     params= db.query(SchedulerParams).filter(SchedulerParams.scheduler_id==scheduler.id).all()
     data = {}
