@@ -239,3 +239,41 @@ def get_all_languages(
         ),
     )
     return response
+
+
+@router.get(
+    path="/relationship-status",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
+    operation_id="listrelationship-status",
+    summary="Retrieve list of  Data.",
+    status_code=status.HTTP_200_OK,
+)
+def get_all_languages(
+    session: Session = Depends(get_db),
+    pagination_params: PaginationParameters = Depends(PaginationParameters),
+    order_params: OrderParameters = Depends(OrderParameters),
+    filter_params: GenericFilterParameters = Depends(GenericFilterParameters),
+):
+    """Endpoint for retrieving all AvatarGroup entities."""
+
+    response, total_pages, total_elements = service.get_relationship_statuses(
+        session,
+        pagination_params,
+        order_params,
+        filter_params,
+    )
+
+    response_data = [LanguageBase.from_orm(elem) for elem in response]
+
+    response = ResponseEnvelope[List[LanguageBase]](
+        data=response_data,
+        pagination=Pagination(
+            size=pagination_params.size,
+            page=pagination_params.page,
+            total_pages=total_pages,
+            total_elements=total_elements,
+            order_by=order_params.order_by,
+        ),
+    )
+    return response

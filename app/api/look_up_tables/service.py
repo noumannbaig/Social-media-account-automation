@@ -4,7 +4,7 @@ from uuid import UUID
 from typing import Tuple, List
 
 from datetime import datetime, timezone
-from app.api.avatar_creation.db_models import Countries, EmailProviders, Genders, Language, Nationalities, Platform
+from app.api.avatar_creation.db_models import Countries, EmailProviders, Genders, Language, Nationalities, Platform, RelationshipStatuses
 from app.database.session import update_session, delete_entity
 from app.api.commons.api_models import (
     GenericFilterParameters,
@@ -337,6 +337,62 @@ def get_languages(
         field, order = order_params.order_by.split(":")
         if hasattr(Language, field):
             column = getattr(Language, field)
+            if order == "desc":
+                query = query.order_by(column.desc())
+            else:
+                query = query.order_by(column)
+
+    # Apply pagination
+    offset = (pagination_params.page - 1) * pagination_params.size
+    query = query.offset(offset).limit(pagination_params.size)
+
+    # Execute the query
+    contacted_users = query.all()
+
+    # Calculate total number of pages
+    total_pages = (total_count + pagination_params.size - 1) // pagination_params.size
+
+    return contacted_users, total_pages, total_count
+
+def get_relationship_statuses(
+    session: Session,
+    pagination_params: PaginationParameters,
+    order_params: OrderParameters,
+    filter_params: GenericFilterParameters,
+) -> Tuple[List[RelationshipStatuses], int, int]:
+    """Get all parameter entries in database.
+
+    Args:
+        session (Session): Current SQLAlchemy session
+        pagination_params (PaginationParameters): Pagination parameters.
+        order_params (OrderParameters): Order parameters
+        filter_params (GenericFilterParameters): Filter query string.
+
+    Returns:
+        Tuple[List[Parameter], int, int]:
+            Tuple of reduced list of entries,
+            total number of pages and total number of elements.
+    """
+
+    # Query to get a base query for ContactUs
+    query = session.query(RelationshipStatuses)
+
+    # Apply filtering
+    if filter_params.filter:
+        for field in filter_params.filter.split(","):
+            if hasattr(RelationshipStatuses, field):
+                query = query.filter(
+                    getattr(RelationshipStatuses, field).ilike(f"%{filter_params.filter}%")
+                )
+
+    # Get total count of elements
+    total_count = query.count()
+
+    # Apply ordering
+    if order_params.order_by:
+        field, order = order_params.order_by.split(":")
+        if hasattr(RelationshipStatuses, field):
+            column = getattr(RelationshipStatuses, field)
             if order == "desc":
                 query = query.order_by(column.desc())
             else:
