@@ -57,8 +57,12 @@ def get_all_avatar_groups(
         order_params,
         filter_params,
     )
-
-    response_data = [AvatarGroupResponse.from_orm(elem) for elem in response]
+    response_data=[]
+    for elem in response:
+     response_elem=   AvatarGroupResponse.from_orm(elem)
+     response_elem.no_of_avatars=len(service.get_avatarnumber_by_id(session,elem.id))
+     response_data.append(response_elem)
+    # response_data = [AvatarGroupResponse.from_orm(elem) for elem in response]
 
     response = ResponseEnvelope[List[AvatarGroupResponse]](
         data=response_data,
@@ -98,9 +102,11 @@ def read_AvatarGroup_by_id(
 
 @router.delete(
     path="/{id}",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
     operation_id="deleteAvatarGroupById",
     summary="Delete AvatarGroup Data by id.",
-    status_code=status.HTTP_204_NO_CONTENT,
+    status_code=status.HTTP_200_OK,
 )
 def delete_AvatarGroup__(
     id: int,
@@ -110,7 +116,7 @@ def delete_AvatarGroup__(
 
     service.delete_avatar_group(session, id)
 
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return ResponseEnvelope(data="Record deleted")
 
 
 @router.put(

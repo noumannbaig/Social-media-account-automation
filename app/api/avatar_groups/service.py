@@ -4,6 +4,7 @@ from uuid import UUID
 from typing import Tuple, List
 
 from datetime import datetime, timezone
+from app.api.avatar_creation.db_models import Avatar
 from app.api.avatar_groups.db_models import AvatarGroup
 from app.api.avatar_groups.api_models import AvatarGroupBaseInsert
 from app.database.session import update_session, delete_entity
@@ -51,7 +52,20 @@ def get_avatargroup_by_id(session: Session, id: UUID) -> AvatarGroup:
     query = session.query(AvatarGroup).filter(AvatarGroup.id == id)
 
     return query.one()
+def get_avatarnumber_by_id(session: Session, id: UUID) -> Avatar:
+    """Get avatar group entity by id.
 
+    Args:
+        session (Session): Current SQLAlchemy session.
+        id (UUID): Id of an already created Avatar group entity.
+
+    Returns:
+        Avatar group: Meta data to the given Avatar group entity.
+    """
+
+    query = session.query(Avatar).filter(Avatar.avatar_group_id == id)
+
+    return query.all()
 
 def get_avatar_groups(
     session: Session,

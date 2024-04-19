@@ -45,6 +45,7 @@ class AvatarGroupResponse(AvatarGroupBase):
 
     id: int
     creation_date: datetime
+    no_of_avatars:Optional[int]
 
     class Config:
         allow_population_by_field_name = True
