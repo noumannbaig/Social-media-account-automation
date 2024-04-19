@@ -20,6 +20,8 @@ from app.api.avatar_groups.views import router as avatar_group_router
 from app.api.avatar_creation.views import router as avatar_creation_router
 from app.api.look_up_tables.views import router as look_ups
 from app.api.jobs.views import router as jobs
+from app.api.dashboard.views import router as dashboard
+
 
 
 api_router = APIRouter(
@@ -36,6 +38,9 @@ api_router.include_router(
 )
 api_router.include_router(
     jobs, prefix="/schedulers", tags=["Schedulers"]
+)
+api_router.include_router(
+    dashboard, prefix="/dashboard", tags=["Dashboard"]
 )
 
 
