@@ -38,11 +38,15 @@ def get_platforms(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Platform, field):
-                query = query.filter(
-                    getattr(Platform, field).ilike(f"%{filter_params.filter}%")
-                )
+                column = getattr(Platform, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
 
     # Get total count of elements
     total_count = query.count()
@@ -95,12 +99,15 @@ def get_providers(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(EmailProviders, field):
-                query = query.filter(
-                    getattr(EmailProviders, field).ilike(f"%{filter_params.filter}%")
-                )
-
+                column = getattr(EmailProviders, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
     # Get total count of elements
     total_count = query.count()
 
@@ -152,11 +159,15 @@ def get_countries(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Countries, field):
-                query = query.filter(
-                    getattr(Countries, field).ilike(f"%{filter_params.filter}%")
-                )
+                column = getattr(Countries, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
 
     # Get total count of elements
     total_count = query.count()
@@ -209,11 +220,15 @@ def get_nationalities(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Nationalities, field):
-                query = query.filter(
-                    getattr(Nationalities, field).ilike(f"%{filter_params.filter}%")
-                )
+                column = getattr(Nationalities, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
 
     # Get total count of elements
     total_count = query.count()
@@ -266,12 +281,15 @@ def get_genders(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Genders, field):
-                query = query.filter(
-                    getattr(Genders, field).ilike(f"%{filter_params.filter}%")
-                )
-
+                column = getattr(Genders, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
     # Get total count of elements
     total_count = query.count()
 
@@ -323,11 +341,15 @@ def get_languages(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Language, field):
-                query = query.filter(
-                    getattr(Language, field).ilike(f"%{filter_params.filter}%")
-                )
+                column = getattr(Language, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
 
     # Get total count of elements
     total_count = query.count()
@@ -379,12 +401,15 @@ def get_relationship_statuses(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(RelationshipStatuses, field):
-                query = query.filter(
-                    getattr(RelationshipStatuses, field).ilike(f"%{filter_params.filter}%")
-                )
-
+                column = getattr(RelationshipStatuses, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
     # Get total count of elements
     total_count = query.count()
 

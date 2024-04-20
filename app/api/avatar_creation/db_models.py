@@ -86,11 +86,11 @@ class Avatar(Base, TableBase):
     nationality = relationship("Nationalities", back_populates="avatars")
     relationship_status = relationship("RelationshipStatuses", back_populates="avatars")
 
-    # firstName = synonym("first_name")
-    # lastName = synonym("last_name")
-    # jobTitle = synonym("job_title")
-    # createdBy = synonym("created_by")
-    # creationDate = synonym("creation_date")
+    firstName = synonym("first_name")
+    lastName = synonym("last_name")
+    jobTitle = synonym("job_title")
+    createdBy = synonym("created_by")
+    creationDate = synonym("creation_date")
 
 class AvatarEmails(Base,TableBase):
     __tablename__ = 'avatar_emails'

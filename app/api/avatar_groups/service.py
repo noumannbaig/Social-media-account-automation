@@ -92,12 +92,15 @@ def get_avatar_groups(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(AvatarGroup, field):
-                query = query.filter(
-                    getattr(AvatarGroup, field).ilike(f"%{filter_params.filter}%")
-                )
-
+                column = getattr(AvatarGroup, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
     # Get total count of elements
     total_count = query.count()
 

@@ -108,11 +108,15 @@ def get_avatars_by_scheduler_no(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Avatar, field):
-                query = query.filter(
-                    getattr(Avatar, field).ilike(f"%{filter_params.filter}%")
-                )
+                column = getattr(Avatar, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import or_
+            query = query.filter(or_(*conditions))
 
     # Get total count of elements
     total_count = query.count()
@@ -163,12 +167,15 @@ def get_avatars(
 
     # Apply filtering
     if filter_params.filter:
-        for field in filter_params.filter.split(","):
+        conditions = []
+        for field_value_pair in filter_params.filter.split(","):
+            field, value = field_value_pair.split(":")
             if hasattr(Avatar, field):
-                query = query.filter(
-                    getattr(Avatar, field).ilike(f"%{filter_params.filter}%")
-                )
-
+                column = getattr(Avatar, field)
+                conditions.append(column.ilike(f"%{value}%"))
+        if conditions:
+            from sqlalchemy import and_
+            query = query.filter(and_(*conditions))
     # Get total count of elements
     total_count = query.count()
 
