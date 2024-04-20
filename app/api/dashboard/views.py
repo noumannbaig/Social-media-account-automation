@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Response
 from uuid import UUID
 from typing import List
 from sqlalchemy.orm import Session
-from app.api.look_up_tables import service
+from app.api.dashboard import service
 from app.api.look_up_tables.api_models import CountriesBase, GenderBase, LanguageBase, NationalityBase, PlatformsBase, ProvidersBase
 from app.database.session import get_db
 from app.api.commons.api_models import ResponseEnvelope, status
@@ -72,58 +72,69 @@ class AvatarSummary(BaseModel):
     relationship_statuses: dict[RelationshipStatusEnum, float]
     job_titles: dict[JobTitleEnum, float]
     email_providers: dict[EmailProviderEnum, float]
-
-@router.get("/dashboard/summary", response_model=AvatarSummary)
-async def get_dashboard_summary():
-    # This is where you would normally get your data from the database
-    # For the purpose of this example, we'll use hardcoded data.
+@router.get(
+    path="/v2/dashboard/summary",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
+    operation_id="getDashboardData",
+    summary="Retrieve dashboard data",
+    status_code=status.HTTP_200_OK,
+)
+@router.get("/dashboard/summary")
+def get_dashboard_summary(db: Session = Depends(get_db)):
+    summary=service.get_dashboard_summary(db)
+    return ResponseEnvelope(data=summary)
+# @router.get("/dashboard/summary", response_model=AvatarSummary)
+# async def get_dashboard_summary():
+#     # This is where you would normally get your data from the database
+#     # For the purpose of this example, we'll use hardcoded data.
     
-    summary = AvatarSummary(
-        total_avatars=10000,
-        idle=20,
-        busy=40,
-        error=60,
-        platforms={
-            PlatformEnum.facebook: 100,
-            PlatformEnum.twitter: 350,
-            PlatformEnum.instagram: 100,
-            PlatformEnum.linkedin: 1000,
-        },
-        countries={
-            CountryEnum.uae: 60,
-            CountryEnum.ksa: 61,
-            CountryEnum.qtr: 59,
-            CountryEnum.usa: 67,
-        },
-        email_providers={
-            EmailProviderEnum.gmail:4,
-            EmailProviderEnum.outlook:0,
-            EmailProviderEnum.yahoo:2,
-        },
-        relationship_statuses={
-            RelationshipStatusEnum.married:0,
-            RelationshipStatusEnum.complicated:0,
-            RelationshipStatusEnum.divorced:0,
-            RelationshipStatusEnum.single:0,
-        },
-        genders={
-            GenderEnum.male:0,
-            GenderEnum.female:5
-        },
-        age_groups={
-            AgeGroupEnum.generation_x:1,
-            AgeGroupEnum.generation_z:2,
-            AgeGroupEnum.millennials:1,
+#     summary = AvatarSummary(
+#         total_avatars=10000,
+#         idle=20,
+#         busy=40,
+#         error=60,
+#         platforms={
+#             PlatformEnum.facebook: 100,
+#             PlatformEnum.twitter: 350,
+#             PlatformEnum.instagram: 100,
+#             PlatformEnum.linkedin: 1000,
+#         },
+#         countries={
+#             CountryEnum.uae: 60,
+#             CountryEnum.ksa: 61,
+#             CountryEnum.qtr: 59,
+#             CountryEnum.usa: 67,
+#         },
+#         email_providers={
+#             EmailProviderEnum.gmail:4,
+#             EmailProviderEnum.outlook:0,
+#             EmailProviderEnum.yahoo:2,
+#         },
+#         relationship_statuses={
+#             RelationshipStatusEnum.married:0,
+#             RelationshipStatusEnum.complicated:0,
+#             RelationshipStatusEnum.divorced:0,
+#             RelationshipStatusEnum.single:0,
+#         },
+#         genders={
+#             GenderEnum.male:0,
+#             GenderEnum.female:5
+#         },
+#         age_groups={
+#             AgeGroupEnum.generation_x:1,
+#             AgeGroupEnum.generation_z:2,
+#             AgeGroupEnum.millennials:1,
 
-        },
-        job_titles={
-            JobTitleEnum.hr_manager:1,
-            JobTitleEnum.influencer:2,
-            JobTitleEnum.politician:1,
-            JobTitleEnum.ux_designer:2,
+#         },
+#         job_titles={
+#             JobTitleEnum.hr_manager:1,
+#             JobTitleEnum.influencer:2,
+#             JobTitleEnum.politician:1,
+#             JobTitleEnum.ux_designer:2,
             
-        },
-        # ... additional hardcoded data would follow
-    )
+#         },
+#         # ... additional hardcoded data would follow
+#     )
     
-    return summary
+#     return summary
