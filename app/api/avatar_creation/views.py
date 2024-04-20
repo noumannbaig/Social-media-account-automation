@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Query, Response
 from uuid import UUID
 from typing import List
@@ -88,10 +88,13 @@ def get_all_avatar(
         filter_params,
     )
     response_data_list=[]
+    current_year = datetime.now().year
     for elem in response:
         # elem.birthdate= datetime(elem.birthdate)
+
         response_data = AvatarResponse.from_orm(elem)
         response_data.a_gender=elem.gender.desc_en
+        response_data.a_age=int(current_year-elem.birthdate.year)
         response_data.a_avatar_group=elem.avatar_group.group_name
         response_data.a_country=elem.country.desc_en
         response_data.a_relationship_status=elem.relationship_status.desc_en
@@ -133,11 +136,13 @@ def get_all_avatar_by_scheduler(
         filter_params,
         scheduler_no
     )
+    current_year = datetime.now().year
 
     response_data_list=[]
     for elem in response:
         response_data = AvatarResponse.from_orm(elem)
         response_data.a_gender=elem.gender.desc_en
+        response_data.a_age=int(current_year-elem.birthdate.year)
         response_data.a_avatar_group=elem.avatar_group.group_name
         response_data.a_country=elem.country.desc_en
         response_data.a_relationship_status=elem.relationship_status.desc_en

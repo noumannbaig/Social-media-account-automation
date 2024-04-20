@@ -14,6 +14,7 @@ class AvatarBase(BaseModel):
     first_name: str
     last_name: str
     birthdate: date
+    a_age:Optional[int]
     job_title: Optional[str]
     a_gender: Optional[str]
     a_relationship_status: Optional[str]
