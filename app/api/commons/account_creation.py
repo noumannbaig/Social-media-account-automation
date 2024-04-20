@@ -227,12 +227,12 @@ def create_gmail_account(
         user_agent = UserAgent(browsers=['chrome'])
         chrome_options = Options()
 
-        # chrome_options.add_argument("--headless")
-        # chrome_options.add_argument("--no-sandbox")
-        # chrome_options.add_argument("--disable-dev-shm-usage")
-        # chrome_options.add_argument("--disable-gpu")
-        # chrome_options.add_argument("--disable-extensions")
-        # chrome_options.add_argument(f'--proxy-server={proxy_string}')
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument(f'--proxy-server={proxy_string}')
         
         # # Add additional arguments to prevent detection
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -679,298 +679,298 @@ def create_gmail_account(
         # Introduce random delay before closing the browser
         time.sleep(random.uniform(1, 10))
         # Wait for the page to load and the security button to be clickable
-        try:
-            # Wait for the security button to be clickable
-            security_button_xpath = "//*[@id='yDmH0d']/c-wiz/div/div[2]/div/c-wiz/c-wiz/div/div[1]/div[3]/c-wiz/nav/ul/li[4]/a"
-            security_button = wait.until(EC.element_to_be_clickable((By.XPATH, security_button_xpath)))
-            security_button.click()
-            print("Security button clicked successfully.")
-        except Exception as e:
-            pass
+#         try:
+#             # Wait for the security button to be clickable
+#             security_button_xpath = "//*[@id='yDmH0d']/c-wiz/div/div[2]/div/c-wiz/c-wiz/div/div[1]/div[3]/c-wiz/nav/ul/li[4]/a"
+#             security_button = wait.until(EC.element_to_be_clickable((By.XPATH, security_button_xpath)))
+#             security_button.click()
+#             print("Security button clicked successfully.")
+#         except Exception as e:
+#             pass
 
-        try:
-        # Wait for the "2-Step Verification" section to become clickable.
-            two_step_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "2-Step Verification")]'))
-            )
+#         try:
+#         # Wait for the "2-Step Verification" section to become clickable.
+#             two_step_button = WebDriverWait(driver, 10).until(
+#                 EC.element_to_be_clickable((By.XPATH, '//div[contains(text(), "2-Step Verification")]'))
+#             )
 
-            # Click the "2-Step Verification" button.
-            two_step_button.click()
-        except Exception as e:
-            pass
+#             # Click the "2-Step Verification" button.
+#             two_step_button.click()
+#         except Exception as e:
+#             pass
 
         
         
         
-        try:
-            # Wait for the "Get started" button to be clickable
-            get_started_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//span[text()='Get started']"))
-            )
+#         try:
+#             # Wait for the "Get started" button to be clickable
+#             get_started_button = WebDriverWait(driver, 10).until(
+#                 EC.element_to_be_clickable((By.XPATH, "//span[text()='Get started']"))
+#             )
 
-            # Click the "Get started" button
-            get_started_button.click()
-            time.sleep(10)
-        except Exception as e:
-            pass
+#             # Click the "Get started" button
+#             get_started_button.click()
+#             time.sleep(10)
+#         except Exception as e:
+#             pass
 
-        # try:
-        #         button=WebDriverWait(driver, 10).until(
-        #         EC.element_to_be_clickable((By.CSS_SELECTOR, "[jsname='V67aGc']")))
-        #         # button = driver.find_element(By.CSS_SELECTOR, "[jsname='V67aGc']")
-        #         button.click()
-        # except Exception as e:
-        #     pass
+#         # try:
+#         #         button=WebDriverWait(driver, 10).until(
+#         #         EC.element_to_be_clickable((By.CSS_SELECTOR, "[jsname='V67aGc']")))
+#         #         # button = driver.find_element(By.CSS_SELECTOR, "[jsname='V67aGc']")
+#         #         button.click()
+#         # except Exception as e:
+#         #     pass
         
 
 
-        # try:
-        #     password_field = wait.until(
-        #     EC.visibility_of_element_located((By.NAME, "Passwd"))
-        #     )
-        #     password_field.clear()
-        #     password_field.send_keys(your_password)
-        #     next_button = WebDriverWait(driver, 10).until(
-        #     EC.element_to_be_clickable(
-        #     (By.XPATH, "//button/span[contains(text(), 'Next')]")
-        #     )
-        #     )
-        #     next_button.click()
-        #     time.sleep(5)
-        # except Exception as e:
-        #     pass
-        try:
-            # Find the phone number input field and enter the phone number
-            # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "phoneNumberId")))
-            retry_count = 5
-            for _ in range(retry_count):
-                # country = get_countries()
-                # countryId = find_country_by_name(country, 'Pakistan')
-                # countryCode = proxy["countryCode"]
-                # phone_number = get_phone_number(countryId["id"])
-                # phone_input = driver.find_element(By.ID, "phoneNumberId")
-                # phone_input.clear()
-                # phone_input.send_keys(phone_number[0])
+#         # try:
+#         #     password_field = wait.until(
+#         #     EC.visibility_of_element_located((By.NAME, "Passwd"))
+#         #     )
+#         #     password_field.clear()
+#         #     password_field.send_keys(your_password)
+#         #     next_button = WebDriverWait(driver, 10).until(
+#         #     EC.element_to_be_clickable(
+#         #     (By.XPATH, "//button/span[contains(text(), 'Next')]")
+#         #     )
+#         #     )
+#         #     next_button.click()
+#         #     time.sleep(5)
+#         # except Exception as e:
+#         #     pass
+#         try:
+#             # Find the phone number input field and enter the phone number
+#             # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "phoneNumberId")))
+#             retry_count = 5
+#             for _ in range(retry_count):
+#                 # country = get_countries()
+#                 # countryId = find_country_by_name(country, 'Pakistan')
+#                 # countryCode = proxy["countryCode"]
+#                 # phone_number = get_phone_number(countryId["id"])
+#                 # phone_input = driver.find_element(By.ID, "phoneNumberId")
+#                 # phone_input.clear()
+#                 # phone_input.send_keys(phone_number[0])
 
-                # activationId = phone_number[1]
-                name=proxy['country']
-                country=get_countries_v2(name)
-                phone_number=get_numbers_v2(country,122)
-                try:
-                    if phone_number['error_code'] =="no_numbers":
-                        retry_count_1=5
-                        for _ in range(retry_count_1):
-                            country=get_all_countries_v2()
-                            phone_number=get_numbers_v2(country,122)
-                            try:
-                                if phone_number['error_code'] =="no_numbers":
-                                    continue
-                            except:
-                                pass
-                            sms=get_sms_v2(phone_number['request_id'])
-                            if sms =="":
-                                continue
+#                 # activationId = phone_number[1]
+#                 name=proxy['country']
+#                 country=get_countries_v2(name)
+#                 phone_number=get_numbers_v2(country,122)
+#                 try:
+#                     if phone_number['error_code'] =="no_numbers":
+#                         retry_count_1=5
+#                         for _ in range(retry_count_1):
+#                             country=get_all_countries_v2()
+#                             phone_number=get_numbers_v2(country,122)
+#                             try:
+#                                 if phone_number['error_code'] =="no_numbers":
+#                                     continue
+#                             except:
+#                                 pass
+#                             sms=get_sms_v2(phone_number['request_id'])
+#                             if sms =="":
+#                                 continue
                     
                         
-                except Exception as e: 
-                    pass
-                try:
-                    input_field = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, "//input[@type='tel']"))
-                    )
+#                 except Exception as e: 
+#                     pass
+#                 try:
+#                     input_field = WebDriverWait(driver, 10).until(
+#                     EC.presence_of_element_located((By.XPATH, "//input[@type='tel']"))
+#                     )
 
-                    # Clear any existing value in the input field
-                    input_field.clear()
+#                     # Clear any existing value in the input field
+#                     input_field.clear()
 
-                    # Enter the phone number
-                    input_field.send_keys(phone_number['number'])
-                except Exception as e:
-                    pass
-                # try:
+#                     # Enter the phone number
+#                     input_field.send_keys(phone_number['number'])
+#                 except Exception as e:
+#                     pass
+#                 # try:
                     
-                #     # Find the phone number input element by its id or other attributes
-                #     phone_input = driver.find_element(By.ID, 'c51')  # You'd replace 'c51' with the actual ID or other selector of the input
+#                 #     # Find the phone number input element by its id or other attributes
+#                 #     phone_input = driver.find_element(By.ID, 'c51')  # You'd replace 'c51' with the actual ID or other selector of the input
 
-                #     # Send the phone number to the input
-                #     phone_input.send_keys(phone_number)
-                except :
-                    pass
+#                 #     # Send the phone number to the input
+#                 #     phone_input.send_keys(phone_number)
+#                 except :
+#                     pass
         
         
                 
-                try:
-                    next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
-                    next_button.click()
-                except Exception as e:
-                    pass
-                # try:
-                #     # This XPath looks for a <span> element with text "Next" inside a div with specific class attributes
-                #     next_button = driver.find_element(By.XPATH, "//span[contains(text(), 'Next')]/ancestor::div[contains(@class, 'U26fgb O0WRkf oG5Srb HQ8yf C0oVfc') and not(contains(@style, 'display: none'))]")
-                #     next_button.click()
-                #     print("Next button clicked successfully!")
-                # except Exception as e:
-                #     print("Error finding or clicking the Next button:", e)
+#                 try:
+#                     next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
+#                     next_button.click()
+#                 except Exception as e:
+#                     pass
+#                 # try:
+#                 #     # This XPath looks for a <span> element with text "Next" inside a div with specific class attributes
+#                 #     next_button = driver.find_element(By.XPATH, "//span[contains(text(), 'Next')]/ancestor::div[contains(@class, 'U26fgb O0WRkf oG5Srb HQ8yf C0oVfc') and not(contains(@style, 'display: none'))]")
+#                 #     next_button.click()
+#                 #     print("Next button clicked successfully!")
+#                 # except Exception as e:
+#                 #     print("Error finding or clicking the Next button:", e)
 
-                except: 
-                    pass
-                try:
-                    error_message= driver.find_element(By.XPATH,"//div[contains(@class, 'dEOOab') and contains(@class, 'RxsGPe') and contains(text(), 'Invalid number, try again.')]")
-                    if error_message and error_message.is_displayed():
-                        print("Error message displayed. Retrying...")
-                        time.sleep(2)  # Add a delay before retrying
-                        continue
-                except Exception as e:
-                    pass
+#                 except: 
+#                     pass
+#                 try:
+#                     error_message= driver.find_element(By.XPATH,"//div[contains(@class, 'dEOOab') and contains(@class, 'RxsGPe') and contains(text(), 'Invalid number, try again.')]")
+#                     if error_message and error_message.is_displayed():
+#                         print("Error message displayed. Retrying...")
+#                         time.sleep(2)  # Add a delay before retrying
+#                         continue
+#                 except Exception as e:
+#                     pass
 
-                # while True:
-                    #sms = get_activation(activationId)
-                sms=get_sms_v2(phone_number['request_id'])
+#                 # while True:
+#                     #sms = get_activation(activationId)
+#                 sms=get_sms_v2(phone_number['request_id'])
 
-                if sms =="":
+#                 if sms =="":
 
-                    # sms=get_sms_v2(phone_number['request_id'])
-                    # if sms=="":
-                    continue
-                else:
-                    break    
-        except Exception as e:
-            pass
-
-        
-        try:
-        # Find the input field by its class name
-            input_field = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "whsOnd"))
-            )
-
-        # Clear any existing value in the input field
-            input_field.clear()
-
-        # Enter the code
-            code = sms  # Replace "YOUR_CODE_HERE" with the desired code
-            input_field.send_keys(code['sms_code'])
-            try:
-                next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
-                next_button.click()
-            except Exception as e:
-                pass
-        except Exception as e:
-            pass
-        
-
-        try:
-        # Find the "Turn on" button by its class name
-            turn_on_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(@class, 'RveJvd snByac') and text()='Turn on']")))
-
-            # Click the "Turn on" button
-            turn_on_button.click()
-
-        except Exception as e:
-            pass
-        time.sleep(5)
-
-        try:
-        
-            verification_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#yDmH0d > c-wiz > div > div:nth-child(2) > div > c-wiz > c-wiz > div > div.s7iwrf.gMPiLc.Kdcijb > div > div > c-wiz > section > div:nth-child(4) > div > div > div:nth-child(2)")))
-
-            # Click on the 2-Step Verification button
-            verification_button.click()
-
-        except Exception as e:
-            pass
-
-        time.sleep(5)
-
-        try:
-            # Scroll to the "App passwords" link
-            app_passwords_link = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'App passwords')]"))
-            )
-            driver.execute_script("arguments[0].scrollIntoView();", app_passwords_link)
-
-            # Use a CSS Selector to find the link by part of its href attribute and click it
-            app_passwords_link = driver.find_element(By.CSS_SELECTOR,"a[href*='myaccount.google.com/apppasswords']")
-            app_passwords_link.click()
-        except Exception as e:
-            pass
+#                     # sms=get_sms_v2(phone_number['request_id'])
+#                     # if sms=="":
+#                     continue
+#                 else:
+#                     break    
+#         except Exception as e:
+#             pass
 
         
-    #     try:
-    # # Wait for the ">" button to be clickable
-    #         wait = WebDriverWait(driver, 10)
-    #         app_passwords_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".GzPZ0c .U26fgb.mUbCce.fKz7Od.UQO9ef.zC7z7b.M9Bg4d .DPvwYc")))
+#         try:
+#         # Find the input field by its class name
+#             input_field = WebDriverWait(driver, 10).until(
+#             EC.presence_of_element_located((By.CLASS_NAME, "whsOnd"))
+#             )
+
+#         # Clear any existing value in the input field
+#             input_field.clear()
+
+#         # Enter the code
+#             code = sms  # Replace "YOUR_CODE_HERE" with the desired code
+#             input_field.send_keys(code['sms_code'])
+#             try:
+#                 next_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//span[text()='Next']")))
+#                 next_button.click()
+#             except Exception as e:
+#                 pass
+#         except Exception as e:
+#             pass
         
-    #         # Scroll to the element
-    #         driver.execute_script("arguments[0].scrollIntoView(true);", app_passwords_button)
+
+#         try:
+#         # Find the "Turn on" button by its class name
+#             turn_on_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[contains(@class, 'RveJvd snByac') and text()='Turn on']")))
+
+#             # Click the "Turn on" button
+#             turn_on_button.click()
+
+#         except Exception as e:
+#             pass
+#         time.sleep(5)
+
+#         try:
+        
+#             verification_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "#yDmH0d > c-wiz > div > div:nth-child(2) > div > c-wiz > c-wiz > div > div.s7iwrf.gMPiLc.Kdcijb > div > div > c-wiz > section > div:nth-child(4) > div > div > div:nth-child(2)")))
+
+#             # Click on the 2-Step Verification button
+#             verification_button.click()
+
+#         except Exception as e:
+#             pass
+
+#         time.sleep(5)
+
+#         try:
+#             # Scroll to the "App passwords" link
+#             app_passwords_link = WebDriverWait(driver, 10).until(
+#                 EC.presence_of_element_located((By.XPATH, "//div[contains(text(), 'App passwords')]"))
+#             )
+#             driver.execute_script("arguments[0].scrollIntoView();", app_passwords_link)
+
+#             # Use a CSS Selector to find the link by part of its href attribute and click it
+#             app_passwords_link = driver.find_element(By.CSS_SELECTOR,"a[href*='myaccount.google.com/apppasswords']")
+#             app_passwords_link.click()
+#         except Exception as e:
+#             pass
+
+        
+#     #     try:
+#     # # Wait for the ">" button to be clickable
+#     #         wait = WebDriverWait(driver, 10)
+#     #         app_passwords_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, ".GzPZ0c .U26fgb.mUbCce.fKz7Od.UQO9ef.zC7z7b.M9Bg4d .DPvwYc")))
+        
+#     #         # Scroll to the element
+#     #         driver.execute_script("arguments[0].scrollIntoView(true);", app_passwords_button)
             
-    #         # Wait a moment for scrolling to finish
-    #         wait.until(EC.visibility_of(app_passwords_button))
+#     #         # Wait a moment for scrolling to finish
+#     #         wait.until(EC.visibility_of(app_passwords_button))
         
-    #         # Try clicking the button again
-    #         app_passwords_button.click()
-    #     except Exception as e:
-    #         # If after waiting the click is still not possible, try clicking via JavaScript
-    #         driver.execute_script("arguments[0].click();", app_passwords_button)
-        try:
-            # Find the input field by its ID
-            input_field = WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.ID, "i5"))
-            )
+#     #         # Try clicking the button again
+#     #         app_passwords_button.click()
+#     #     except Exception as e:
+#     #         # If after waiting the click is still not possible, try clicking via JavaScript
+#     #         driver.execute_script("arguments[0].click();", app_passwords_button)
+#         try:
+#             # Find the input field by its ID
+#             input_field = WebDriverWait(driver, 10).until(
+#                 EC.presence_of_element_located((By.ID, "i5"))
+#             )
 
-            # Clear any existing text in the input field
-            input_field.clear()
+#             # Clear any existing text in the input field
+#             input_field.clear()
 
-            # Enter text into the input field
-            input_field.send_keys("Gmail")
+#             # Enter text into the input field
+#             input_field.send_keys("Gmail")
 
-            # Press Enter key to submit the input (if needed)
-            input_field.send_keys(Keys.RETURN)
-        except Exception as e:
-            pass
+#             # Press Enter key to submit the input (if needed)
+#             input_field.send_keys(Keys.RETURN)
+#         except Exception as e:
+#             pass
 
-        try:
-            # Find the button by its class name
-            create_button = WebDriverWait(driver, 10).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "AeBiU-vQzf8d"))
-            )
+#         try:
+#             # Find the button by its class name
+#             create_button = WebDriverWait(driver, 10).until(
+#                 EC.element_to_be_clickable((By.CLASS_NAME, "AeBiU-vQzf8d"))
+#             )
 
-            # Click the button
-            create_button.click()
-        except Exception as e:
-            pass
+#             # Click the button
+#             create_button.click()
+#         except Exception as e:
+#             pass
 
-        try:
-            # Find the parent element containing the span elements
-            parent_element = driver.find_element(By.CSS_SELECTOR,'.bwApif-cnG4Wd')
+#         try:
+#             # Find the parent element containing the span elements
+#             parent_element = driver.find_element(By.CSS_SELECTOR,'.bwApif-cnG4Wd')
 
-            # Find all span elements within the parent element
-            span_elements = parent_element.find_elements(By.CSS_SELECTOR,'span.v2CTKd.KaSAf')
+#             # Find all span elements within the parent element
+#             span_elements = parent_element.find_elements(By.CSS_SELECTOR,'span.v2CTKd.KaSAf')
 
-#            Extract the text content from each span element
-            text_contents = [span.text for span in span_elements]
-        except Exception as e:
-            pass
+# #            Extract the text content from each span element
+#             text_contents = [span.text for span in span_elements]
+#         except Exception as e:
+#             pass
 
-        try:
-            # Wait for the password element to be loaded
-            password_element = WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, 'strong.v2CTKd'))
-            )
-            time.sleep(3)
-            # Extract the text from the element
-            app_password = password_element.text
-            print(app_password)
-        except:
-            pass
-        try:
-            done_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[text()='Done']"))
-            )
+#         try:
+#             # Wait for the password element to be loaded
+#             password_element = WebDriverWait(driver, 20).until(
+#                 EC.presence_of_element_located((By.CSS_SELECTOR, 'strong.v2CTKd'))
+#             )
+#             time.sleep(3)
+#             # Extract the text from the element
+#             app_password = password_element.text
+#             print(app_password)
+#         except:
+#             pass
+#         try:
+#             done_button = WebDriverWait(driver, 20).until(
+#             EC.element_to_be_clickable((By.XPATH, "//span[text()='Done']"))
+#             )
 
-            # Click the 'Done' button
-            done_button.click()
-        except:
-            pass
+#             # Click the 'Done' button
+#             done_button.click()
+#         except:
+#             pass
         # Close the browser window at the end of your automation
         driver.quit()
 
@@ -979,11 +979,9 @@ def create_gmail_account(
             + your_username
             + "@gmail.com\nPassword: "
             + your_password
-            + "\napppassword"
-            +app_password
-            + "\n"
         )
-        return {"username":your_username, "password":app_password}
+        account_error=6
+        return {"username":your_username}
     except Exception as e:
         # Close the browser window in case of failure
         driver.quit()

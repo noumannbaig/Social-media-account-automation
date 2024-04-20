@@ -13,7 +13,7 @@ from app.api.avatar_creation.api_models import (
 from app.api.avatar_creation import service
 from sqlalchemy.orm import Session
 from app.api.commons.account_creation import create_gmail_account
-from app.api.commons.facebook_account import create_facebook_account
+from app.api.commons.facebook_account import create_facebook_account, create_facebook_account_phone
 from app.api.commons.gmail_fetch import fetch_instagram_codes
 from app.api.commons.insta_account import create_insta_account
 from app.api.jobs.service import initiate_avatar_generation

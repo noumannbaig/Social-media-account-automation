@@ -60,14 +60,14 @@ app.add_middleware(
 async def Test():
     return {"message": "Server Running Properly"}
 
-# @app.on_event("startup")
-# def start_scheduler():
-#     scheduler = BackgroundScheduler(timezone=utc)
-#     scheduler.add_job(run_avatar_generation_scheduler, 'interval', minutes=5)
-#     scheduler.add_job(run_avatar_generation_scheduler, 'interval', hours=1)
+@app.on_event("startup")
+def start_scheduler():
+    scheduler = BackgroundScheduler(timezone=utc)
+    # scheduler.add_job(run_avatar_generation_scheduler, 'interval', minutes=5)
+    scheduler.add_job(run_avatar_generation_scheduler, 'interval', hours=1)
 
-#     scheduler.start()
-#     print("Scheduler started...")
+    scheduler.start()
+    print("Scheduler started...")
 app.include_router(api_router)
 
 add_exception_handlers(app)
