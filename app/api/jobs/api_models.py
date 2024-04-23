@@ -34,6 +34,7 @@ class SchedulerResponse(BaseModel):
     start_time: Optional[datetime] = None
     end_time: Optional[datetime] = None
     scheduler_status:Optional[str]
+    scheduler_no:uuid.UUID
     class Config:
         allow_population_by_field_name = True
         alias_generator = to_camel

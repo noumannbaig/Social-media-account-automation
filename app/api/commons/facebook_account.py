@@ -149,7 +149,7 @@ def create_facebook_account(
         password = proxy["password"]
         ip = proxy["ip"]
         port = proxy["port"]
-        port=10694
+        # port=10694
         user_agent = UserAgent(browsers=['chrome'],min_percentage=2.1,os='windows')
         chrome_options = Options()
         # Set up proxy with authentication
@@ -163,12 +163,12 @@ def create_facebook_account(
 
         # Configure Chrome options for headless mode and to prevent detection
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument(f'--proxy-server={proxy_string}')
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--no-sandbox")
+        # chrome_options.add_argument("--disable-dev-shm-usage")
+        # chrome_options.add_argument("--disable-gpu")
+        # chrome_options.add_argument("--disable-extensions")
+        # chrome_options.add_argument(f'--proxy-server={proxy_string}')
 
         # # Add additional arguments to prevent detection
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -193,13 +193,13 @@ def create_facebook_account(
                
                 name=proxy['country']
                 country=get_countries_v2(name)
-                phone_number=get_numbers_v2(country,5)
+                phone_number=get_numbers_v2(country,124)
                 try:
                     if phone_number['error_code'] =="no_numbers":
                         retry_count_1=5
                         for _ in range(retry_count_1):
                             country=get_all_countries_v2()
-                            phone_number=get_numbers_v2(country,122)
+                            phone_number=get_numbers_v2(country,124)
                             try:
                                 if phone_number['error_code'] =="no_numbers":
                                     continue

@@ -22,10 +22,34 @@ class AvatarBase(BaseModel):
     a_nationality: Optional[str]
     a_avatar_group: Optional[str]
     bio: str
-    photo: Optional[str]
+    photo:Optional[str]
     is_auto: bool
 
+class AvatarGmailBase(BaseModel):
+    """AvatarGroup base model."""
+    username: str
+    password: str
+    provider: Optional[str]
+    email_provider_id:Optional[int]
+    is_valid: str
+    last_validation: Optional[datetime]
+    class Config:
+        allow_population_by_field_name = True
+        alias_generator = to_camel
+        orm_mode = True
+class AvatarPlatformBase(BaseModel):
+    """AvatarGroup base model."""
+    username: str
+    password: str
+    platform: Optional[str]
+    platform_id: Optional[int]
 
+    is_valid: str
+    last_validation: Optional[datetime]
+    class Config:
+        allow_population_by_field_name = True
+        alias_generator = to_camel
+        orm_mode = True
 class ValidatedAvatarBase(AvatarBase):
     """Avatar validation base model."""
 

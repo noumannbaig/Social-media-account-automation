@@ -4,6 +4,8 @@ from uuid import UUID
 from typing import List
 from app.api.avatar_creation.api_models import (
     AvatarGenerate,
+    AvatarGmailBase,
+    AvatarPlatformBase,
     AvatarResponse,
     AvatarBaseInsert,
     FacebookAcount,
@@ -99,9 +101,99 @@ def get_all_avatar(
         response_data.a_country=elem.country.desc_en
         response_data.a_relationship_status=elem.relationship_status.desc_en
         response_data.a_nationality=elem.nationality.desc_en
+        response_data.photo=elem.photo
         response_data_list.append(response_data)
 
     response = ResponseEnvelope[List[AvatarResponse]](
+        data=response_data_list,
+        pagination=Pagination(
+            size=pagination_params.size,
+            page=pagination_params.page,
+            total_pages=total_pages,
+            total_elements=total_elements,
+            order_by=order_params.order_by,
+        ),
+    )
+    return response
+
+@router.get(
+    path="/gmail",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
+    operation_id="listAvatarbygmail",
+    summary="Retrieve list of  Data.",
+    status_code=status.HTTP_200_OK,
+)
+def get_all_gmail_avatar(
+    session: Session = Depends(get_db),
+    pagination_params: PaginationParameters = Depends(PaginationParameters),
+    order_params: OrderParameters = Depends(OrderParameters),
+    filter_params: GenericFilterParameters = Depends(GenericFilterParameters),
+):
+    """Endpoint for retrieving all AvatarGroup entities."""
+
+    response, total_pages, total_elements = service.get_gmail_avatars(
+        session,
+        pagination_params,
+        order_params,
+        filter_params,
+    )
+    response_data_list=[]
+    current_year = datetime.now().year
+    for elem in response:
+        # elem.birthdate= datetime(elem.birthdate)
+
+        response_data = AvatarGmailBase.from_orm(elem)
+        response_data.provider=elem.email_provider.desc_en
+        response_data.email_provider_id=elem.email_provider.desc_en
+   
+        response_data_list.append(response_data)
+
+    response = ResponseEnvelope[List[AvatarGmailBase]](
+        data=response_data_list,
+        pagination=Pagination(
+            size=pagination_params.size,
+            page=pagination_params.page,
+            total_pages=total_pages,
+            total_elements=total_elements,
+            order_by=order_params.order_by,
+        ),
+    )
+    return response
+@router.get(
+    path="/platform",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
+    operation_id="listAvatarbyplatform",
+    summary="Retrieve list of  Data.",
+    status_code=status.HTTP_200_OK,
+)
+def get_all_platform_avatar(
+    session: Session = Depends(get_db),
+    pagination_params: PaginationParameters = Depends(PaginationParameters),
+    order_params: OrderParameters = Depends(OrderParameters),
+    filter_params: GenericFilterParameters = Depends(GenericFilterParameters),
+):
+    """Endpoint for retrieving all AvatarGroup entities."""
+
+    response, total_pages, total_elements = service.get_platform_avatars(
+        session,
+        pagination_params,
+        order_params,
+        filter_params,
+    )
+    response_data_list=[]
+    current_year = datetime.now().year
+    for elem in response:
+        # elem.birthdate= datetime(elem.birthdate)
+
+        response_data = AvatarPlatformBase.from_orm(elem)
+        response_data.platform=elem.platform.desc_en
+        response_data.platform_id=elem.platform_id
+
+        response_data_list.append(response_data)
+
+    response = ResponseEnvelope[List[AvatarPlatformBase]](
         data=response_data_list,
         pagination=Pagination(
             size=pagination_params.size,
@@ -121,7 +213,7 @@ def get_all_avatar(
     status_code=status.HTTP_200_OK,
 )
 def get_all_avatar_by_scheduler(
-    scheduler_no:int,
+    scheduler_no:UUID,
     session: Session = Depends(get_db),
     pagination_params: PaginationParameters = Depends(PaginationParameters),
     order_params: OrderParameters = Depends(OrderParameters),
@@ -129,7 +221,7 @@ def get_all_avatar_by_scheduler(
 ):
     """Endpoint for retrieving all AvatarGroup entities."""
 
-    response, total_pages, total_elements = service.get_avatars_by_scheduler_no(
+    response, total_pages, total_elements = service.get_avatars_by_scheduler_no_api(
         session,
         pagination_params,
         order_params,
@@ -140,6 +232,7 @@ def get_all_avatar_by_scheduler(
 
     response_data_list=[]
     for elem in response:
+        
         response_data = AvatarResponse.from_orm(elem)
         response_data.a_gender=elem.gender.desc_en
         response_data.a_age=int(current_year-elem.birthdate.year)
@@ -150,7 +243,7 @@ def get_all_avatar_by_scheduler(
         response_data_list.append(response_data)
 
     response = ResponseEnvelope[List[AvatarResponse]](
-        data=response_data,
+        data=response_data_list,
         pagination=Pagination(
             size=pagination_params.size,
             page=pagination_params.page,

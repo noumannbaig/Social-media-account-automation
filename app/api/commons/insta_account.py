@@ -147,14 +147,16 @@ def create_insta_account(
         ]
 
         # Choose a random proxy from the list
-        proxy = proxies[12]
-        #proxy=random_proxy()
+        #proxy = proxies[12]
+        proxy=random_proxy()
         proxy_string = f"{proxy['ip']}:{proxy['port']}"
 
         userName = proxy["userName"]
         password = proxy["password"]
         ip = proxy["ip"]
         port = proxy["port"]
+        # port = 10694
+
         # userName = quote(userName, safe='')
         # password = quote(password, safe='')
         # Set up proxy with authentication
@@ -170,12 +172,12 @@ def create_insta_account(
         user_agent = UserAgent(browsers=['safari', 'chrome'],min_percentage=2.1)
 
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--disable-gpu")
-        chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument(f'--proxy-server={proxy_string}')
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--no-sandbox")
+        # chrome_options.add_argument("--disable-dev-shm-usage")
+        # chrome_options.add_argument("--disable-gpu")
+        # chrome_options.add_argument("--disable-extensions")
+        # chrome_options.add_argument(f'--proxy-server={proxy_string}')
 
         # # Add additional arguments to prevent detection
 
