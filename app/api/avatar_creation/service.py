@@ -317,7 +317,8 @@ def get_avatars(
 
     return contacted_users, total_pages, total_count
 
-def delete_avatar(session: Session, id: UUID) -> None:
+
+def delete_avatar_bulk(session: Session, ids: List[int]) -> None:
     """Delete a Contact Us entity.
 
     Args:
@@ -325,9 +326,20 @@ def delete_avatar(session: Session, id: UUID) -> None:
         definition_id (UUID): Id of an already existing FTD entity.
         id (UUID): Id of an existing contact us  entity.
     """
-    db_data = get_avatar_by_id(session, id)
-    delete_entity(db_data, session)
-
+    for id in ids:
+        db_data = get_avatar_by_id(session, id)
+        #     for av_pl in db_data.avatar_platforms:
+        #         delete_entity(av_pl, session)
+        #     for av_em in db_data.avatar_emails:
+        #         delete_entity(av_em, session)
+        #     for av_l in db_data.avatar_languages:
+        #         delete_entity(av_l, session)
+        #     for av_pl in db_data.avatar_platforms:
+        #         delete_entity(av_l, session)
+        delete_entity(db_data, session)
+        
+        
+    
 
 def update_avatar(
     session: Session,
@@ -738,6 +750,7 @@ def generate_users_v2(
                     #     db_avatar_emails.status="COMPLETED"
                     # else:
                     #     db_avatar_emails.status="FAILED"
+
 
         return {
             "message": f"{request.number_of_users} users generated successfully",
