@@ -1,9 +1,10 @@
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Query, Response
+from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Query, Response, UploadFile
 from uuid import UUID
 from typing import List
 from app.api.avatar_creation.api_models import (
     AvatarGenerate,
+    AvatarGenerateManual,
     AvatarGmailBase,
     AvatarPlatformBase,
     AvatarResponse,
@@ -36,35 +37,35 @@ router = APIRouter()
 @router.post(
     path="",
     response_model=ResponseEnvelope,
-    operation_id="createAvatar",
+    operation_id="createAvatarmanual",
     summary="Create Avatar Data.",
     status_code=status.HTTP_201_CREATED,
 )
 def create(
     db: Session = Depends(get_db),
-    avatar: AvatarBaseInsert = Body(...),
+    avatar: AvatarGenerateManual = Body(...),
 ):
-    AvatarGroup_response = service.create_avatar(db, avatar)
-    response_data = AvatarResponse.from_orm(AvatarGroup_response)
+    Avatar_response = service.generate_users_manually(db, avatar)
+    response_data = AvatarResponse.from_orm(Avatar_response)
     AvatarGroup_response = ResponseEnvelope(data=response_data)
     return AvatarGroup_response
 
 
-@router.post(
-    path="",
-    response_model=ResponseEnvelope,
-    operation_id="createAvatar",
-    summary="Create Avatar Data.",
-    status_code=status.HTTP_201_CREATED,
-)
-def create(
-    db: Session = Depends(get_db),
-    avatar: AvatarBaseInsert = Body(...),
-):
-    AvatarGroup_response = service.create_avatar(db, avatar)
-    response_data = AvatarResponse.from_orm(AvatarGroup_response)
-    AvatarGroup_response = ResponseEnvelope(data=response_data)
-    return AvatarGroup_response
+# @router.post(
+#     path="",
+#     response_model=ResponseEnvelope,
+#     operation_id="createAvatar",
+#     summary="Create Avatar Data.",
+#     status_code=status.HTTP_201_CREATED,
+# )
+# def create(
+#     db: Session = Depends(get_db),
+#     avatar: AvatarBaseInsert = Body(...),
+# ):
+#     AvatarGroup_response = service.create_avatar(db, avatar)
+#     response_data = AvatarResponse.from_orm(AvatarGroup_response)
+#     AvatarGroup_response = ResponseEnvelope(data=response_data)
+#     return AvatarGroup_response
 
 
 @router.get(
@@ -457,3 +458,22 @@ def generate_user(
     )
     response_data = user
     return ResponseEnvelope(data=response_data)
+
+@router.post(
+    path="/uploadfile/",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
+    operation_id="upload image",
+    summary="upload image",
+    status_code=status.HTTP_200_OK,
+)
+async def create_upload_file(
+    session: Session = Depends(get_db),
+    id:int=Query(...),
+    file: UploadFile=None
+    ):
+    profile_picture=service.upload_avatar_image(session,id,file.content_type,file.filename)
+    if profile_picture is True:
+        return ResponseEnvelope(data="Image uploaded successfully")
+    else:
+        raise  HTTPException(status_code=400,detail="Image upload Failed")

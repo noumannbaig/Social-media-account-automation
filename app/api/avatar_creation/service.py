@@ -22,13 +22,13 @@ from app.api.avatar_creation.db_models import (
 )
 from app.api.avatar_groups.db_models import AvatarGroup
 from app.api.commons.account_creation import create_gmail_account
+from app.api.commons.generate_profile_picture import upload_image_to_s3
 from app.api.commons.helpers import (
     clean_name,
-    upload_image_to_s3,
     generate_complex_password,
     generate_profile_picture,
 )
-from app.api.avatar_creation.api_models import AvatarBaseInsert, AvatarGenerate
+from app.api.avatar_creation.api_models import AvatarBaseInsert, AvatarGenerate, AvatarGenerateManual
 from app.api.jobs.db_models import Schedulers
 from app.database.session import update_session, delete_entity
 from app.api.commons.api_models import (
@@ -466,7 +466,128 @@ def generate_users(
         raise HTTPException(status_code=500, detail=str(e))
     
 
+def generate_users_manually(
+    session: Session,
+    request:AvatarGenerateManual,
+):
+    country_entity = session.query(Countries).filter(Countries.id==request.country).first()
+    gender_entity = session.query(Genders).filter(Genders.id==request.gender).first()
+    group_entity = session.query(AvatarGroup).filter(AvatarGroup.id==request.group).first()
+    nationality_entity = session.query(Nationalities).filter(Nationalities.id==request.nationality).first()
+    try:
+      
+        relationship_status = random.choice(
+            ["Single", "Married", "It's Complicated"]
+        )
 
+        full_name = f"{request.first_name} {request.last_name}"
+
+            # Generate a username and password
+            # username = f"{first_name.lower()}.{last_name.lower()}{os.urandom(4).isdigit()}"
+        username=generate_username(request.first_name,request.last_name)
+        email = f"{username}@gmail.com"
+        password = generate_complex_password(8)
+
+            # Generate a random birthday between 1980 and 2000
+        year = random.randint(1980, 2000)
+        month = random.randint(1, 12)
+        day = random.randint(1, 28)  # Using 28 to avoid issues with February
+        birthday = datetime(year, month, day).strftime("%m/%d/%Y")
+        meta_dict = dict(
+        creation_date=datetime.now(timezone.utc),
+    )
+            # Prepare and insert user data
+        db_user = Avatar(
+            first_name=request.first_name,
+            last_name=request.last_name,
+            birthdate=birthday,
+            job_title=request.position,
+            gender_id=request.gender,  # Assuming you have a gender_id already defined
+            relationship_status_id=2,  # Assuming you have a relationship_status_id defined
+            country_id=request.country,  # Assuming you have a country_id defined
+            nationality_id=request.nationality,  # Assuming you have a nationality_id defined
+            avatar_group_id=request.group,
+            bio=request.bio,
+            is_auto=False, 
+            
+            version=0,  # Assuming the initial version is 0
+            created_by=1,  
+            **meta_dict# Assuming you have the user_id of the creator
+        )
+        update_session(db_user, session)
+
+        db_avatar_emails=AvatarEmails(
+            username=username,
+            password=password,
+            avatar_id=db_user.id,
+            email_provider_id=1,
+            email_status_id=1,
+            is_auto=False,
+            is_valid=True,
+            last_validation=datetime.now(),
+            created_by=1,
+            **meta_dict
+        )
+        update_session(db_avatar_emails, session)
+
+        db_languages=AvatarLanguage(
+            avatar_id = db_user.id,
+            language_id = request.language,
+            version = 0,
+            created_by = 1,
+            **meta_dict
+        )
+        update_session(db_languages, session)
+        if(len(request.platform) != 0):
+            for platform_id in request.platform:
+                db_platform = AvatarPlatform(
+                    avatar_id=db_user.id,
+                    email=email,
+                    password=password,
+                    platform_id=platform_id,
+                    platform_status_id=1,  # Assuming a default status ID of 1 for all platforms
+                    last_validation=None,  # Assuming it's nullable and setting it to None
+                    is_auto=False,
+                    version=0,  # Assuming version starts at 0
+                    created_by=1,
+                     **meta_dict # Assuming the creator ID is 1
+                )
+                update_session(db_platform, session)
+                    # result=create_gmail_account(first_name,last_name,username,datetime(year, month, day).strftime("%d %m %Y"),str(request.gender),password)
+                    # if result is not None:
+                    #     db_avatar_emails.app_password=result["password"]
+                    #     db_avatar_emails.status="COMPLETED"
+                    # else:
+                    #     db_avatar_emails.status="FAILED"
+
+        return db_user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+def get_avatars_by_scheduler_no(
+    session: Session,
+    scheduler_no: UUID
+) -> List[Avatar]:
+
+    # Query to get a base query for ContactUs
+    query = session.query(Avatar).filter(Avatar.scheduler_no==scheduler_no).all()
+    return query
+
+def get_avatars_platforms_by_scheduler_no(
+    session: Session,
+    scheduler_no: UUID
+) -> List[AvatarPlatform]:
+
+    # Query to get a base query for ContactUs
+    query = session.query(AvatarPlatform).filter(AvatarPlatform.scheduler_no==scheduler_no).all()
+    return query
+
+def generate_username(first_name, last_name):
+    # Generate a random 4-character alphanumeric string
+    suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=4))
+    username = f"{first_name.lower()}.{last_name.lower()}{suffix}"
+    return username
 def generate_users_v2(
     session: Session,
     request:AvatarGenerate,
@@ -595,28 +716,28 @@ def generate_users_v2(
                 **meta_dict
             )
             update_session(db_languages, session)
-            
-            for platform_id in request.platform:
-                db_platform = AvatarPlatform(
-                    avatar_id=db_user.id,
-                    email=email,
-                    password=password,
-                    platform_id=platform_id,
-                    platform_status_id=1,  # Assuming a default status ID of 1 for all platforms
-                    last_validation=None,  # Assuming it's nullable and setting it to None
-                    is_auto=True,
-                    scheduler_no=scheduler.scheduler_no,
-                    version=0,  # Assuming version starts at 0
-                    created_by=1,
-                     **meta_dict # Assuming the creator ID is 1
-                )
-                update_session(db_platform, session)
-                # result=create_gmail_account(first_name,last_name,username,datetime(year, month, day).strftime("%d %m %Y"),str(request.gender),password)
-                # if result is not None:
-                #     db_avatar_emails.app_password=result["password"]
-                #     db_avatar_emails.status="COMPLETED"
-                # else:
-                #     db_avatar_emails.status="FAILED"
+            if(len(request.platform) != 0):
+                for platform_id in request.platform:
+                    db_platform = AvatarPlatform(
+                        avatar_id=db_user.id,
+                        email=email,
+                        password=password,
+                        platform_id=platform_id,
+                        platform_status_id=1,  # Assuming a default status ID of 1 for all platforms
+                        last_validation=None,  # Assuming it's nullable and setting it to None
+                        is_auto=True,
+                        scheduler_no=scheduler.scheduler_no,
+                        version=0,  # Assuming version starts at 0
+                        created_by=1,
+                         **meta_dict # Assuming the creator ID is 1
+                    )
+                    update_session(db_platform, session)
+                    # result=create_gmail_account(first_name,last_name,username,datetime(year, month, day).strftime("%d %m %Y"),str(request.gender),password)
+                    # if result is not None:
+                    #     db_avatar_emails.app_password=result["password"]
+                    #     db_avatar_emails.status="COMPLETED"
+                    # else:
+                    #     db_avatar_emails.status="FAILED"
 
         return {
             "message": f"{request.number_of_users} users generated successfully",
@@ -649,3 +770,15 @@ def generate_username(first_name, last_name):
     suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=4))
     username = f"{first_name.lower()}.{last_name.lower()}{suffix}"
     return username
+
+
+def upload_avatar_image(session:Session, id:int, image_bytes: bytes , file_name: str):
+    avatar=get_avatar_by_id(session,id)
+    try:
+
+        profile_picture=upload_image_to_s3(image_bytes,file_name)
+        avatar.photo=profile_picture
+        update_session(avatar,session)
+        return True
+    except Exception as e:
+        return False

@@ -125,7 +125,21 @@ class AvatarGenerate(BaseModel):
     style_id: str 
     age:list[int]
 
-
+class AvatarGenerateManual(BaseModel):
+    first_name: str
+    last_name:str
+    position: str
+    bio: str
+    country: int 
+    group: int 
+    platform: list[int]
+    providers:list[int] 
+    nationality: int 
+    language: int 
+    gender: int 
+    bio_type: str
+    style_id: str 
+    age:list[int]
 class AvatarDashbaord(BaseModel):
     number_of_avatars: int 
     idle: int 
