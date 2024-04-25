@@ -189,9 +189,10 @@ def get_all_platform_avatar(
         # elem.birthdate= datetime(elem.birthdate)
 
         response_data = AvatarPlatformBase.from_orm(elem)
-        response_data.platform=elem.platform.desc_en
+        response_data.username=elem.email.split('@')[0]
+        response_data.platform_name=elem.platform.desc_en
         response_data.platform_id=elem.platform_id
-
+        response_data.is_valid=True
         response_data_list.append(response_data)
 
     response = ResponseEnvelope[List[AvatarPlatformBase]](
