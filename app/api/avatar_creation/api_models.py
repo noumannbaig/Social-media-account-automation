@@ -27,6 +27,7 @@ class AvatarBase(BaseModel):
 
 class AvatarGmailBase(BaseModel):
     """AvatarGroup base model."""
+    id:int
     username: str
     password: str
     provider: Optional[str]
@@ -39,6 +40,7 @@ class AvatarGmailBase(BaseModel):
         orm_mode = True
 class AvatarPlatformBase(BaseModel):
     """AvatarGroup base model."""
+    id:int
     username: Optional[str]
     password: str
     platform_name: Optional[str]

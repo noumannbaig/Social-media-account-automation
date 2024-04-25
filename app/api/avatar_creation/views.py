@@ -145,6 +145,7 @@ def get_all_gmail_avatar(
         # elem.birthdate= datetime(elem.birthdate)
 
         response_data = AvatarGmailBase.from_orm(elem)
+        response_data.id=elem.avatar_id
         response_data.provider=elem.email_provider.desc_en
         response_data.email_provider_id=elem.email_provider.desc_en
    
@@ -189,6 +190,7 @@ def get_all_platform_avatar(
         # elem.birthdate= datetime(elem.birthdate)
 
         response_data = AvatarPlatformBase.from_orm(elem)
+        response_data.id=elem.avatar_id
         response_data.username=elem.email.split('@')[0]
         response_data.platform_name=elem.platform.desc_en
         response_data.platform_id=elem.platform_id
