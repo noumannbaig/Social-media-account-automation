@@ -175,7 +175,7 @@ def process_scheduler_tasks(db: Session, scheduler: Schedulers):
     data = {}
     for param in params:
         # Check for array-like strings and parse them
-        if param.param_key in ['platform', 'providers', 'age']:
+        if param.param_key in ['platform', 'providers', 'age','relationship_status']:
             data[param.param_key] = parse_pg_array(param.param_value)
         else:
             # For other types, attempt direct conversion
