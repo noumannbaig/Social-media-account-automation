@@ -144,8 +144,6 @@ class AvatarGenerateManual(BaseModel):
     bio: str
     country: int 
     group: int 
-    platform: list[int]
-    providers:list[int] 
     relationship_status:int
     nationality: int 
     language: int 
