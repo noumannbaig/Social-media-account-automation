@@ -24,11 +24,13 @@ RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_R
     && chmod 0755 /usr/local/bin/chromedriver \
     && rm ~/chromedriver_linux64.zip
 
+RUN chromedriver --version
+RUN google-chrome-stable --version
 # Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN mkdir /.cache/selenium
+RUN mkdir -p /.cache/selenium
 RUN chmod -R 777 /.cache/
 
 # Make port 80 available to the world outside this container
