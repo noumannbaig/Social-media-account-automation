@@ -98,7 +98,16 @@ class GoogleAccount(BaseModel):
     birthday: str
     password: str
 
-
+class AvatarEmail(BaseModel):
+    avatar_id:int
+    username:str
+    password: str
+    provider_id:int
+class AvatarPlatformAdd(BaseModel):
+    avatar_id:int
+    username:str
+    password: str
+    platform_id:list[int]
 class InstaAccount(BaseModel):
     email:str
     fullName: str
@@ -120,6 +129,7 @@ class AvatarGenerate(BaseModel):
     group: int 
     platform: list[int]
     providers:list[int] 
+    relationship_status:list[int] 
     nationality: int 
     language: int 
     gender: int 
@@ -136,6 +146,7 @@ class AvatarGenerateManual(BaseModel):
     group: int 
     platform: list[int]
     providers:list[int] 
+    relationship_status:int
     nationality: int 
     language: int 
     gender: int 

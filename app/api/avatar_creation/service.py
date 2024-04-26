@@ -28,7 +28,7 @@ from app.api.commons.helpers import (
     generate_complex_password,
     generate_profile_picture,
 )
-from app.api.avatar_creation.api_models import AvatarBaseInsert, AvatarGenerate, AvatarGenerateManual
+from app.api.avatar_creation.api_models import AvatarBaseInsert, AvatarEmail, AvatarGenerate, AvatarGenerateManual, AvatarPlatformAdd
 from app.api.jobs.db_models import Schedulers
 from app.database.session import update_session, delete_entity
 from app.api.commons.api_models import (
@@ -486,11 +486,11 @@ def generate_users_manually(
     gender_entity = session.query(Genders).filter(Genders.id==request.gender).first()
     group_entity = session.query(AvatarGroup).filter(AvatarGroup.id==request.group).first()
     nationality_entity = session.query(Nationalities).filter(Nationalities.id==request.nationality).first()
+    relationship_status=session.query(RelationshipStatuses).filter(RelationshipStatuses.id==request.relationship_status).first()
+
+
     try:
       
-        relationship_status = random.choice(
-            ["Single", "Married", "It's Complicated"]
-        )
 
         full_name = f"{request.first_name} {request.last_name}"
 
@@ -515,7 +515,7 @@ def generate_users_manually(
             birthdate=birthday,
             job_title=request.position,
             gender_id=request.gender,  # Assuming you have a gender_id already defined
-            relationship_status_id=2,  # Assuming you have a relationship_status_id defined
+            relationship_status_id=relationship_status.id,  # Assuming you have a relationship_status_id defined
             country_id=request.country,  # Assuming you have a country_id defined
             nationality_id=request.nationality,  # Assuming you have a nationality_id defined
             avatar_group_id=request.group,
@@ -528,19 +528,19 @@ def generate_users_manually(
         )
         update_session(db_user, session)
 
-        db_avatar_emails=AvatarEmails(
-            username=username,
-            password=password,
-            avatar_id=db_user.id,
-            email_provider_id=1,
-            email_status_id=1,
-            is_auto=False,
-            is_valid=True,
-            last_validation=datetime.now(),
-            created_by=1,
-            **meta_dict
-        )
-        update_session(db_avatar_emails, session)
+        # db_avatar_emails=AvatarEmails(
+        #     username=username,
+        #     password=password,
+        #     avatar_id=db_user.id,
+        #     email_provider_id=1,
+        #     email_status_id=1,
+        #     is_auto=False,
+        #     is_valid=True,
+        #     last_validation=datetime.now(),
+        #     created_by=1,
+        #     **meta_dict
+        # )
+        # update_session(db_avatar_emails, session)
 
         db_languages=AvatarLanguage(
             avatar_id = db_user.id,
@@ -550,21 +550,21 @@ def generate_users_manually(
             **meta_dict
         )
         update_session(db_languages, session)
-        if(len(request.platform) != 0):
-            for platform_id in request.platform:
-                db_platform = AvatarPlatform(
-                    avatar_id=db_user.id,
-                    email=email,
-                    password=password,
-                    platform_id=platform_id,
-                    platform_status_id=1,  # Assuming a default status ID of 1 for all platforms
-                    last_validation=None,  # Assuming it's nullable and setting it to None
-                    is_auto=False,
-                    version=0,  # Assuming version starts at 0
-                    created_by=1,
-                     **meta_dict # Assuming the creator ID is 1
-                )
-                update_session(db_platform, session)
+        # if(len(request.platform) != 0):
+        #     for platform_id in request.platform:
+        #         db_platform = AvatarPlatform(
+        #             avatar_id=db_user.id,
+        #             email=email,
+        #             password=password,
+        #             platform_id=platform_id,
+        #             platform_status_id=1,  # Assuming a default status ID of 1 for all platforms
+        #             last_validation=None,  # Assuming it's nullable and setting it to None
+        #             is_auto=False,
+        #             version=0,  # Assuming version starts at 0
+        #             created_by=1,
+        #              **meta_dict # Assuming the creator ID is 1
+        #         )
+        #         update_session(db_platform, session)
                     # result=create_gmail_account(first_name,last_name,username,datetime(year, month, day).strftime("%d %m %Y"),str(request.gender),password)
                     # if result is not None:
                     #     db_avatar_emails.app_password=result["password"]
@@ -575,8 +575,76 @@ def generate_users_manually(
         return db_user
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+def generate_user_email(
+    session: Session,
+    request:AvatarEmail,
+):
+    try:
+        db_avatar= get_avatar_by_id(session,request.avatar_id)
+        if db_avatar is None:
+                raise HTTPException(status_code=404, detail="Avatar not found")    
 
+        meta_dict = dict(
+        creation_date=datetime.now(timezone.utc),
+    )
+            # Prepare and insert user data
+        
+
+        db_avatar_emails=AvatarEmails(
+            username=request.username,
+            password=request.password,
+            avatar_id=db_avatar.id,
+            email_provider_id=request.provider_id,
+            email_status_id=1,
+            is_auto=False,
+            is_valid=True,
+            last_validation=datetime.now(),
+            created_by=1,
+            **meta_dict
+        )
+        update_session(db_avatar_emails, session)
+
+
+        return db_avatar_emails
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))    
+def generate_user_platform(
+    session: Session,
+    request:AvatarPlatformAdd,
+):
+    try:
+        db_avatar= get_avatar_by_id(session,request.avatar_id)
+        if db_avatar is None:
+                raise HTTPException(status_code=404, detail="Avatar not found")    
+
+        meta_dict = dict(
+        creation_date=datetime.now(timezone.utc),
+    )
+            # Prepare and insert user data
+        
+        db_avatar_platform=[]
+        if(len(request.platform_id) != 0):
+            for platform_id in request.platform_id:
+                db_platform = AvatarPlatform(
+                    avatar_id=db_avatar.id,
+                    email=request.username,
+                    password=request.password,
+                    platform_id=platform_id,
+                    platform_status_id=1,  # Assuming a default status ID of 1 for all platforms
+                    last_validation=None,  # Assuming it's nullable and setting it to None
+                    is_auto=False,
+                    version=0,  # Assuming version starts at 0
+                    created_by=1,
+                     **meta_dict # Assuming the creator ID is 1
+                )
+                update_session(db_platform, session)
+                db_avatar_platform.append(db_platform)
+        update_session(db_platform, session)
+
+
+        return db_avatar_platform
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))    
 def get_avatars_by_scheduler_no(
     session: Session,
     scheduler_no: UUID
@@ -610,6 +678,7 @@ def generate_users_v2(
     gender_entity = session.query(Genders).filter(Genders.id==request.gender).first()
     group_entity = session.query(AvatarGroup).filter(AvatarGroup.id==request.group).first()
     nationality_entity = session.query(Nationalities).filter(Nationalities.id==request.nationality).first()
+    db_relationship_status=session.query(RelationshipStatuses).filter(RelationshipStatuses.id.in_(request.relationship_status)).all()
     try:
         for _ in range(request.number_of_users):
 
@@ -646,7 +715,7 @@ def generate_users_v2(
             position = position_response.choices[0].text.strip()
 
             relationship_status = random.choice(
-                ["Single", "Married", "It's Complicated"]
+                db_relationship_status
             )
 
             full_name = f"{first_name} {last_name}"
@@ -673,7 +742,7 @@ def generate_users_v2(
                     birthdate=birthday,
                     job_title=position,
                     gender_id=request.gender,  # Assuming you have a gender_id already defined
-                    relationship_status_id=2,  # Assuming you have a relationship_status_id defined
+                    relationship_status_id=relationship_status.id,  # Assuming you have a relationship_status_id defined
                     country_id=request.country,  # Assuming you have a country_id defined
                     nationality_id=request.nationality,  # Assuming you have a nationality_id defined
                     avatar_group_id=request.group,
