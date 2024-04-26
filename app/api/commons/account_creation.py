@@ -463,13 +463,9 @@ def create_gmail_account(
                 if sms =="":
                     try:
                         # Wait for the button to be clickable
-                        get_new_code_button = WebDriverWait(driver, 10).until(
-                            EC.element_to_be_clickable((By.CLASS_NAME, "LgbsSe"))
-                        )
-
+                        button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '//span[text()="Get new code"]')))
                         # Click the button
-                        get_new_code_button.click()
-
+                        button.click()
                         # Optionally, close the driver after operation is complete
                         # driver.quit()
                     except Exception as e:
