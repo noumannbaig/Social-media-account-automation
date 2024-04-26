@@ -15,14 +15,14 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev
 
-# Install Chromium using the official repository
-RUN curl -sSL https://packages.chromium.org/keyring/pool/main/gpg-key-chromium | apt-key add -
-# Add the Chromium repository source list
-RUN echo "deb [arch=amd64] http://apt.chromium.org/ stable main" >> /etc/apt/sources.list.d/chromium.list
+# # Install Chromium using the official repository
+# RUN curl -sSL https://packages.chromium.org/keyring/pool/main/gpg-key-chromium | apt-key add -
+# # Add the Chromium repository source list
+# RUN echo "deb [arch=amd64] http://apt.chromium.org/ stable main" >> /etc/apt/sources.list.d/chromium.list
 
 # Update package lists after adding the repository
 RUN apt-get update
-
+RUN apt-get install -y chromium
 # Install Chromium and ChromeDriver
 RUN apt-get install -y chromium-chromedriver
 
