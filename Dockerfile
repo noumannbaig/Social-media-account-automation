@@ -15,17 +15,23 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev
 
-# # Install Chromium using the official repository
-# RUN curl -sSL https://packages.chromium.org/keyring/pool/main/gpg-key-chromium | apt-key add -
-# # Add the Chromium repository source list
-# RUN echo "deb [arch=amd64] http://apt.chromium.org/ stable main" >> /etc/apt/sources.list.d/chromium.list
+# Install dependencies for apt signing
+RUN apt-get install -y ca-certificates
+
+# Import the Chromium GPG key from the official Debian packages list
+RUN curl -sSL https://packages.debian.org/pool/main/chromium-browser/chromium-browser_stable_amd64.deb.asc | apt-key add -
+
+# Add the Chromium repository source list (replace 'buster' with your Debian version if different)
+RUN echo "deb [arch=amd64] http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/chromium.list
 
 # Update package lists after adding the repository
 RUN apt-get update
-RUN apt-get install -y chromium
+
+# Install Chromium and ChromeDriver (may vary depending on version)
+RUN apt-get install -y chromium-chromedriver
+
+# Verify Chromium installation
 RUN chromium --version
-# # Install Chromium and ChromeDriver
-# RUN apt-get install -y chromium-chromedriver
 
 # Install Python dependencies
 COPY requirements.txt /app/
