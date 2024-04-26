@@ -7,16 +7,13 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install Chrome
-RUN apt-get update && apt-get install -y wget curl unzip gnupg2 build-essential libpq-dev \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
-    && apt-get update 
-    # && apt-get install -y google-chrome-stable=114.0.5735.90
-RUN apt-cache policy google-chrome-stable
+# Install Packages
+RUN apt-get update && apt-get install -y wget curl unzip gnupg2 build-essential libpq-dev 
 
-RUN google-chrome --version
-    
+# Install a specific version of Google Chrome
+RUN wget --no-verbose -O ./chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.90-1_amd64.deb \
+    && apt install -y ./chrome.deb \
+    && rm .//chrome.deb
 
 # Install ChromeDriver
 RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
