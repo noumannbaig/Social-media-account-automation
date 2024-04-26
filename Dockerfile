@@ -1,48 +1,40 @@
-# Stage 1: Install Chromium and ChromeDriver
-FROM debian:buster as chromedriver-stage
-RUN apt-get update && apt-get install -y wget unzip gnupg2 \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable
-
-RUN google-chrome --version
-
-# Install the matching version of ChromeDriver
-RUN CHROME_VERSION=$(google-chrome --version | grep -oE "[0-9.]+") \
-    && CHROMEDRIVER_VERSION=$(wget -qO- "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") \
-    && wget -q "https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip" \
-    && unzip chromedriver_linux64.zip -d /opt/chromedriver \
-    && ln -s /opt/chromedriver/chromedriver /usr/local/bin/chromedriver \
-    && rm chromedriver_linux64.zip
-
-# Stage 2: Python environment with app setup
+# Use an official Python runtime as a parent image
 FROM python:3.11-slim-buster
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the necessary binaries from the first stage
-COPY --from=chromedriver-stage /opt/chromedriver /opt/chromedriver
-COPY --from=chromedriver-stage /usr/local/bin/chromedriver /usr/local/bin/chromedriver
-COPY --from=chromedriver-stage /opt/google/chrome/google-chrome /opt/google/chrome/google-chrome
-
-# Set environment variable for Chrome binary location
-ENV CHROME_BIN=/opt/google/chrome/google-chrome
-
 # Copy the current directory contents into the container at /app
 COPY . /app
+
+# Install Chrome
+RUN apt-get update && apt-get install -y wget curl unzip gnupg2 build-essential libpq-dev \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable=114.0.5735.90-1
+
+RUN google-chrome --version
+    
+
+# Install ChromeDriver
+RUN CHROME_DRIVER_VERSION=`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE` \
+    && wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/ \
+    && unzip ~/chromedriver_linux64.zip -d ~/ \
+    && mv -f ~/chromedriver /usr/local/bin/chromedriver \
+    && chown root:root /usr/local/bin/chromedriver \
+    && chmod 0755 /usr/local/bin/chromedriver \
+    && rm ~/chromedriver_linux64.zip
 
 # Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Setup permissions for Selenium's cache
-RUN mkdir -p /.cache/selenium
+RUN mkdir /.cache/selenium
 RUN chmod -R 777 /.cache/
 
-# Make port 8080 available to the world outside this container
+# Make port 80 available to the world outside this container
 EXPOSE 8080
 
 # Run app.py when the container launches
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "808
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
