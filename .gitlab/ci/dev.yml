@@ -54,13 +54,13 @@ deploy_dev:
     DEPLOY_HOST: ${CI_COMMIT_REF_SLUG}-${APP}.phaza.ai
     DEPLOY_HOST_CELERY: ${CI_COMMIT_REF_SLUG}-${APP}-celery.phaza.ai
     NUM_REPLICAS: "1"
-    CPU_LIMIT: "400m"
-    MEMORY_LIMIT: "512Mi"
-    CPU_REQUEST: "400m"
+    CPU_LIMIT: "4"
+    MEMORY_LIMIT: "4G"
+    CPU_REQUEST: "500m"
     MEMORY_REQUEST: "512Mi"
     READINESS_INITIAL_DELAY_SECONDS: "60"
     LIVENESS_INITIAL_DELAY_SECONDS: "80"
-    MAXREPLICAS: "1"
+    MAXREPLICAS: "3"
     MINREPLICAS: "1"
   environment:
       name: dev
