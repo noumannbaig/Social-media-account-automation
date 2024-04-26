@@ -14,18 +14,14 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Verify installation
-RUN chromium --version
-RUN chromedriver --version
-
 # Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Improve security by creating cache directory with limited permissions
-RUN mkdir -p /.cache/selenium && chmod 700 /.cache/selenium
+RUN mkdir /.cache/selenium
+RUN chmod -R 777 /.cache/
 
-# Make port 8080 available to the world outside this container
+# Make port 80 available to the world outside this container
 EXPOSE 8080
 
 # Run app.py when the container launches
