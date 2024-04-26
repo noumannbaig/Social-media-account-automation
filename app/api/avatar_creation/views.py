@@ -3,9 +3,11 @@ from fastapi import FastAPI, HTTPException, APIRouter, Depends, Body, Query, Res
 from uuid import UUID
 from typing import List
 from app.api.avatar_creation.api_models import (
+    AvatarEmail,
     AvatarGenerate,
     AvatarGenerateManual,
     AvatarGmailBase,
+    AvatarPlatformAdd,
     AvatarPlatformBase,
     AvatarResponse,
     AvatarBaseInsert,
@@ -50,7 +52,35 @@ def create(
     AvatarGroup_response = ResponseEnvelope(data=response_data)
     return AvatarGroup_response
 
+@router.post(
+    path="/gmail",
+    response_model=ResponseEnvelope,
+    operation_id="createAvatarmanualgmail",
+    summary="Create Avatar Data.",
+    status_code=status.HTTP_201_CREATED,
+)
+def create_avatar_gmail(
+    db: Session = Depends(get_db),
+    avatar: AvatarEmail = Body(...),
+):
+    Avatar_response = service.generate_user_email(db, avatar)
+    AvatarGroup_response = ResponseEnvelope(data=avatar)
+    return AvatarGroup_response
 
+@router.post(
+    path="/platform",
+    response_model=ResponseEnvelope,
+    operation_id="createAvatarmanualplatform",
+    summary="Create Avatar Data.",
+    status_code=status.HTTP_201_CREATED,
+)
+def create_avatar_platform(
+    db: Session = Depends(get_db),
+    avatar: AvatarPlatformAdd = Body(...),
+):
+    Avatar_response = service.generate_user_platform(db, avatar)
+    AvatarGroup_response = ResponseEnvelope(data=avatar)
+    return AvatarGroup_response
 # @router.post(
 #     path="",
 #     response_model=ResponseEnvelope,
