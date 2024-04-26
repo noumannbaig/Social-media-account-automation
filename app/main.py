@@ -1,3 +1,4 @@
+from fastapi.security import HTTPBearer
 from pytz import utc
 import json
 import random
@@ -6,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from app.api.commons.middlewares.auth_middleware import AuthMiddleware
 from app.api.commons.sms_provider import (
     find_country_by_name,
     get_activation,
@@ -45,7 +47,6 @@ api_router.include_router(
 
 
 app = FastAPI(title="Avatar Management")
-
 # Set all CORS enabled origins
 app.add_middleware(
     CORSMiddleware,
@@ -55,6 +56,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# app.add_middleware(AuthMiddleware)
 
 @api_router.get("/test")
 async def Test():
@@ -63,11 +65,12 @@ async def Test():
 @app.on_event("startup")
 def start_scheduler():
     scheduler = BackgroundScheduler(timezone=utc)
-    # scheduler.add_job(run_avatar_generation_scheduler, 'interval', minutes=5)
-    scheduler.add_job(run_avatar_generation_scheduler, 'interval', hours=1)
+    scheduler.add_job(run_avatar_generation_scheduler, 'interval', minutes=5)
+    #scheduler.add_job(run_avatar_generation_scheduler, 'interval', hours=1)
 
     scheduler.start()
     print("Scheduler started...")
 app.include_router(api_router)
 
 add_exception_handlers(app)
+
