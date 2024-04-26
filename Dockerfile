@@ -7,28 +7,16 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install dependencies for Chromium and Python
+# Install Chromium, ChromeDriver, and necessary dependencies
 RUN apt-get update && apt-get install -y \
-    apt-transport-https \
-    curl \
-    gnupg2 \
-    build-essential \
-    libpq-dev
+    chromium \
+    chromium-driver \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies for apt signing (already included in previous version)
-# RUN apt-get install -y ca-certificates
-
-# Add the Chromium repository source list (replace 'buster' with your Debian version if different)
-RUN echo "deb [arch=amd64] http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/chromium.list
-
-# Update package lists after adding the repository
-RUN apt-get update
-
-# Install Chromium and ChromeDriver (may vary depending on version)
-RUN apt-get install -y chromium-chromedriver
-
-# Verify Chromium installation
+# Verify installation
 RUN chromium --version
+RUN chromedriver --version
 
 # Install Python dependencies
 COPY requirements.txt /app/
