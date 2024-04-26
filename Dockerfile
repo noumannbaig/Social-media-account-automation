@@ -7,26 +7,31 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install Chromium
-RUN apt-get update && apt-get install -y wget curl unzip gnupg2 build-essential libpq-dev \
-    && apt-get install -y chromium
+# Install dependencies for Chromium and Python
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    curl \
+    gnupg2 \
+    build-essential \
+    libpq-dev
 
-# Install ChromeDriver compatible with the installed Chromium
-RUN CHROMIUM_VERSION=$(chromium --version | grep -oP '\d+\.\d+\.\d+\.\d+') \
-    && CHROME_DRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROMIUM_VERSION) \
-    && wget -N http://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/ \
-    && unzip ~/chromedriver_linux64.zip -d ~/ \
-    && mv -f ~/chromedriver /usr/local/bin/chromedriver \
-    && chown root:root /usr/local/bin/chromedriver \
-    && chmod 0755 /usr/local/bin/chromedriver \
-    && rm ~/chromedriver_linux64.zip
+# Install Chromium using the official repository
+RUN curl -sSL https://packages.chromium.org/keyring/pool/main/gpg-key-chromium | apt-key add -
+# Add the Chromium repository source list
+RUN echo "deb [arch=amd64] http://apt.chromium.org/ stable main" >> /etc/apt/sources.list.d/chromium.list
+
+# Update package lists after adding the repository
+RUN apt-get update
+
+# Install Chromium and ChromeDriver
+RUN apt-get install -y chromium-chromedriver
 
 # Install Python dependencies
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN mkdir /.cache/selenium
-RUN chmod -R 777 /.cache/
+# Improve security by creating cache directory with limited permissions
+RUN mkdir -p /.cache/selenium && chmod 700 /.cache/selenium
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
