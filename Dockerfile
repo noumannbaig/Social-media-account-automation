@@ -15,11 +15,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev
 
-# Install dependencies for apt signing
-RUN apt-get install -y ca-certificates
-
-# Import the Chromium GPG key from the official Debian packages list
-RUN curl -sSL https://packages.debian.org/pool/main/chromium-browser/chromium-browser_stable_amd64.deb.asc | apt-key add -
+# Install dependencies for apt signing (already included in previous version)
+# RUN apt-get install -y ca-certificates
 
 # Add the Chromium repository source list (replace 'buster' with your Debian version if different)
 RUN echo "deb [arch=amd64] http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/chromium.list
