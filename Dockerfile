@@ -23,8 +23,9 @@ RUN apt-get update && apt-get install -y \
 # Update package lists after adding the repository
 RUN apt-get update
 RUN apt-get install -y chromium
-# Install Chromium and ChromeDriver
-RUN apt-get install -y chromium-chromedriver
+RUN chromium --version
+# # Install Chromium and ChromeDriver
+# RUN apt-get install -y chromium-chromedriver
 
 # Install Python dependencies
 COPY requirements.txt /app/
