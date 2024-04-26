@@ -11,6 +11,7 @@ COPY . /app
 RUN apt-get update && apt-get install -y \
     chromium \
     chromium-driver \
+    wget curl unzip gnupg2 build-essential libpq-dev \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
