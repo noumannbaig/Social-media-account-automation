@@ -6,6 +6,8 @@ RUN apt-get update && apt-get install -y wget unzip gnupg2 \
     && apt-get update \
     && apt-get install -y google-chrome-stable
 
+RUN google-chrome --version
+
 # Install the matching version of ChromeDriver
 RUN CHROME_VERSION=$(google-chrome --version | grep -oE "[0-9.]+") \
     && CHROMEDRIVER_VERSION=$(wget -qO- "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION") \
