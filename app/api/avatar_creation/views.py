@@ -511,7 +511,7 @@ async def create_upload_file(
         raise  HTTPException(status_code=400,detail="Image upload Failed")
     
 @router.post(
-    path="avatar/{avatar_id}/download",
+    path="avatars/download",
     response_model=ResponseEnvelope,
     response_model_exclude_none=True,
     operation_id="download csv",

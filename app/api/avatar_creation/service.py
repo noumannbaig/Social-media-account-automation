@@ -870,8 +870,8 @@ def upload_avatar_image(session:Session, id:int, image_bytes: bytes , file_name:
 
 def export_avatar_to_csv(avatar_id: str, db: Session):
     """Export avatar data to CSV file."""
-    avatar = get_avatar_by_id(db, avatar_id)
-    if not avatar:
+    avatars = db.query(Avatar).all()
+    if not avatars:
         raise HTTPException(status_code=404, detail="Avatar not found")
     
     # Create a StringIO object to write CSV data
@@ -879,29 +879,30 @@ def export_avatar_to_csv(avatar_id: str, db: Session):
     csv_writer = csv.writer(csv_data)
     
     # Write headers
-    csv_writer.writerow(["id", "first_name", "last_name","email","password", "birthdate", "job_title", "gender_id", 
-                         "relationship_status_id", "country_id", "nationality_id", "avatar_group_id", 
+    csv_writer.writerow(["Id", "FirstName", "LastName","Email","Password", "Birthdate", "job title", "Gender", 
+                         "relationshipStatus", "Country", "Nationality", "avatar group", 
                             ])
     
     # Write data
 # Write data
-    if len(avatar.avatar_emails)==0:
-         csv_writer.writerow([
-            avatar.id, avatar.first_name, avatar.last_name,
-            '', '', avatar.birthdate, avatar.job_title,
-            avatar.gender.desc_en, avatar.relationship_status.desc_en, 
-            avatar.country.desc_en, avatar.nationality.desc_en,
-            avatar.avatar_group.group_name
-        ])
-    else:
-        for email in avatar.avatar_emails:
-            csv_writer.writerow([
+    for avatar in avatars:
+        if len(avatar.avatar_emails)==0:
+             csv_writer.writerow([
                 avatar.id, avatar.first_name, avatar.last_name,
-                email.username, email.password, avatar.birthdate, avatar.job_title,
+                '', '', avatar.birthdate, avatar.job_title,
                 avatar.gender.desc_en, avatar.relationship_status.desc_en, 
-                avatar.country.desc_en, avatar.nationality_desc_en,
+                avatar.country.desc_en, avatar.nationality.desc_en,
                 avatar.avatar_group.group_name
             ])
+        else:
+            for email in avatar.avatar_emails:
+                csv_writer.writerow([
+                    avatar.id, avatar.first_name, avatar.last_name,
+                    email.username, email.password, avatar.birthdate, avatar.job_title,
+                    avatar.gender.desc_en, avatar.relationship_status.desc_en, 
+                    avatar.country.desc_en, avatar.nationality.desc_en,
+                    avatar.avatar_group.group_name
+                ])
     
     # Reset pointer to start of StringIO object
     csv_data.seek(0)
