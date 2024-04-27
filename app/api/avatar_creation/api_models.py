@@ -150,8 +150,6 @@ class AvatarGenerateManual(BaseModel):
     language: int 
     gender: int 
     bio_type: str
-    style_id: str 
-    age:list[int]
 class AvatarDashbaord(BaseModel):
     number_of_avatars: int 
     idle: int 
