@@ -868,7 +868,7 @@ def upload_avatar_image(session:Session, id:int, image_bytes: bytes , file_name:
         return False
     
 
-def export_avatar_to_csv(avatar_id: str, db: Session):
+def export_avatar_to_csv( db: Session):
     """Export avatar data to CSV file."""
     avatars = db.query(Avatar).all()
     if not avatars:

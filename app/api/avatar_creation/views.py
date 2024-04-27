@@ -518,8 +518,8 @@ async def create_upload_file(
     summary="download csv",
     status_code=status.HTTP_200_OK,
 )
-def export_avatar_to_csv(avatar_id: str, db: Session = Depends(get_db)):
-    data=service.export_avatar_to_csv(avatar_id,db)
+def export_avatar_to_csv(db: Session = Depends(get_db)):
+    data=service.export_avatar_to_csv(db)
     response = Response(content=data.getvalue(), media_type="application/octet-stream")
     response.headers["Content-Disposition"] = f"attachment; filename=avatar_data.csv"
     return response
