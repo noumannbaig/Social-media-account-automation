@@ -110,13 +110,13 @@ spec:
         #   initialDelaySeconds: ${READINESS_INITIAL_DELAY_SECONDS}
         #   periodSeconds: 3
         #   timeoutSeconds: 10
-        resources:
-          limits:
-            cpu: "${CPU_LIMIT}"
-            memory: "${MEMORY_LIMIT}"
-          requests:
-            cpu: "${CPU_REQUEST}"
-            memory: "${MEMORY_REQUEST}"
+        # resources:
+        #   limits:
+        #     cpu: "${CPU_LIMIT}"
+        #     memory: "${MEMORY_LIMIT}"
+        #   requests:
+        #     cpu: "${CPU_REQUEST}"
+        #     memory: "${MEMORY_REQUEST}"
       securityContext:
         runAsUser: 10001
         sysctls:
