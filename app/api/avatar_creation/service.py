@@ -330,14 +330,6 @@ def delete_avatar_bulk(session: Session, ids: List[int]) -> None:
     """
     for id in ids:
         db_data = get_avatar_by_id(session, id)
-        #     for av_pl in db_data.avatar_platforms:
-        #         delete_entity(av_pl, session)
-        #     for av_em in db_data.avatar_emails:
-        #         delete_entity(av_em, session)
-        #     for av_l in db_data.avatar_languages:
-        #         delete_entity(av_l, session)
-        #     for av_pl in db_data.avatar_platforms:
-        #         delete_entity(av_l, session)
         delete_entity(db_data, session)
         
         
