@@ -509,3 +509,18 @@ async def create_upload_file(
         return ResponseEnvelope(data="Image uploaded successfully")
     else:
         raise  HTTPException(status_code=400,detail="Image upload Failed")
+    
+@router.post(
+    path="avatar/{avatar_id}/download",
+    response_model=ResponseEnvelope,
+    response_model_exclude_none=True,
+    operation_id="download csv",
+    summary="download csv",
+    status_code=status.HTTP_200_OK,
+)
+def export_avatar_to_csv(avatar_id: str, db: Session = Depends(get_db)):
+    data=service.export_avatar_to_csv(avatar_id,db)
+    response = Response(content=data.getvalue(), media_type="application/octet-stream")
+    response.headers["Content-Disposition"] = f"attachment; filename=avatar_data.csv"
+    return response
+    

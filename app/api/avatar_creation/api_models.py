@@ -143,6 +143,7 @@ class AvatarGenerateManual(BaseModel):
     position: str
     bio: str
     country: int 
+    birthday:date
     group: int 
     relationship_status:int
     nationality: int 
