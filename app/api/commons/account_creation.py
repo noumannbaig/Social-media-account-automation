@@ -2,6 +2,7 @@ import json
 from typing import Optional
 
 from httpcore import TimeoutException
+from app.api.commons.proxies_list import random_proxy
 from app.api.commons.sms_provider import (
     find_country_by_name,
     get_activation,
@@ -44,78 +45,7 @@ def create_gmail_account(
     account_error = 0
     try:
         proxies = [
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "bzr6cmu2v9ntzmnhj3cqgb4",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "gkecpblq8awl4s78gbr94ea",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "dp3thm17jcn0t2blwz1lz2s",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "8wmdx3xcr8raxfkpr6wr3o4",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "5st60xaow4vycmy93pnhasw",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "k1rfffj5htpldoy4xols8zl",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "23.109.113.236",
-    #     "port": 9000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "beSmgchc3wREs1dp",
-    #     "password": "mobile;us;;;",
-    # },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10000,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "i48gs3kt71c4hkv0mgqvz3p",
-    #     "password": "RNW78Fm5",
-    # },
-    # {
-    #     "ip": "144.76.231.240",
-    #     "port": 10001,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "sprska2hoe",
-    #     "password": "0Iy6oxisu0=LRN5bal",
-    # },
+   
     {
         "ip": "103.214.44.131",
         "port": 12321,
@@ -124,14 +54,6 @@ def create_gmail_account(
         "userName": "s0I6x7P090XXBD40",
         "password": "9AhOmAaN08U00XKY_country-us",
     },
-    # {
-    #     "ip": "185.130.105.109",
-    #     "port": 10002,
-    #     "country": "USA",
-    #     "countryCode": "US",
-    #     "userName": "5ehlzv7ul147exdffvan3pu",
-    #     "password": "RNW78Fm5",
-    # },
     
     {
         "ip": "167.235.26.46",
@@ -204,8 +126,10 @@ def create_gmail_account(
         
 
         # Choose a random proxy from the list
-        proxy = random.choice(proxies)
-        proxy=proxies[0]
+        proxy=random_proxy()
+
+        # proxy = random.choice(proxies)
+        # proxy=proxies[1]
         proxy_string = f"{proxy['ip']}:{proxy['port']}"
         
         userName = proxy["userName"]
@@ -227,12 +151,12 @@ def create_gmail_account(
         user_agent = UserAgent(browsers=['chrome'])
         chrome_options = Options()
 
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument(f'--proxy-server={proxy_string}')
+        # chrome_options.add_argument(f'--proxy-server={proxy_string}')
         
         # # Add additional arguments to prevent detection
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
