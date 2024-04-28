@@ -101,20 +101,20 @@ def read_AvatarGroup_by_id(
 
 
 @router.delete(
-    path="/bulk-delete",
+    path="/{id}",
     response_model=ResponseEnvelope,
     response_model_exclude_none=True,
-    operation_id="deletebulkAvatarGroup",
-    summary="Delete Bulk AvatarGroup Data by id.",
+    operation_id="deleteAvatarGroupById",
+    summary="Delete AvatarGroup Data by id.",
     status_code=status.HTTP_200_OK,
 )
 def delete_AvatarGroup__(
-    id: List[int],
+    id: int,
     session: Session = Depends(get_db),
 ):
-    """Endpoint for deleting a bulk AvatarGroup data"""
+    """Endpoint for deleting a single AvatarGroup data by id."""
 
-    service.delete_avatar_group_bulk(session, id)
+    service.delete_avatar_group(session, id)
 
     return ResponseEnvelope(data="Record deleted")
 

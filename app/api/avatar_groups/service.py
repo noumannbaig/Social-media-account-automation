@@ -127,7 +127,7 @@ def get_avatar_groups(
     return contacted_users, total_pages, total_count
 
 
-def delete_avatar_group_bulk(session: Session, ids: List[int]) -> None:
+def delete_avatar_group(session: Session, id: UUID) -> None:
     """Delete a Contact Us entity.
 
     Args:
@@ -135,9 +135,8 @@ def delete_avatar_group_bulk(session: Session, ids: List[int]) -> None:
         definition_id (UUID): Id of an already existing FTD entity.
         id (UUID): Id of an existing contact us  entity.
     """
-    for id in ids:
-        db_data = get_avatargroup_by_id(session, id)
-        delete_entity(db_data, session)
+    db_data = get_avatargroup_by_id(session, id)
+    delete_entity(db_data, session)
 
 
 def update_avatar_group(
