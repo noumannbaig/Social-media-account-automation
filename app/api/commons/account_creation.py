@@ -32,6 +32,8 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from fake_useragent import UserAgent
+proxy_error_loading_page=0
+account_error = 0
 
 def create_gmail_account(
     
@@ -42,7 +44,8 @@ def create_gmail_account(
     your_gender,
     your_password,
 ):
-    account_error = 0
+    global proxy_error_loading_page
+
     try:
         proxies = [
    
@@ -151,12 +154,12 @@ def create_gmail_account(
         user_agent = UserAgent(browsers=['chrome'])
         chrome_options = Options()
 
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--disable-extensions")
-        # chrome_options.add_argument(f'--proxy-server={proxy_string}')
+        chrome_options.add_argument(f'--proxy-server={proxy_string}')
         
         # # Add additional arguments to prevent detection
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -168,9 +171,31 @@ def create_gmail_account(
             seleniumwire_options=auth_options
         )  # Initialize your WebDriver here with the appropriate path
         # driver = webdriver.Firefox()  # Initialize your WebDriver here with the appropriate path
-        driver.get(
+
+        try:
+            driver.get(
             "https://accounts.google.com/signup/v2/createaccount?flowName=GlifWebSignIn&flowEntry=SignUp"
-        )
+            )
+        except Exception as e:
+            if 'unknown error: net::ERR_TUNNEL_CONNECTION_FAILED' in e.msg and proxy_error_loading_page<5:
+                proxy_error_loading_page+=1
+                driver.quit()
+                create_gmail_account(
+                    your_first_name,
+                    your_last_name,
+                    your_username,
+                    your_birthday,
+                    your_gender,
+                    your_password,
+                )
+            else:
+
+                print("Can't open chrome due to invalid proxy")
+                print(proxy)
+                print(e)
+                return None
+
+
 
         first_name = driver.find_element(By.NAME, "firstName")
         last_name = driver.find_element(By.NAME, "lastName")
@@ -292,7 +317,7 @@ def create_gmail_account(
                     )
                 )
             )
-
+            global account_error
             if (
                 error_message.text == "Sorry, we could not create your Google Account."
                 and account_error <= 5
