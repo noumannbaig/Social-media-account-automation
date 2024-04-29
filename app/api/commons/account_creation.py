@@ -134,7 +134,7 @@ def create_gmail_account(
         # proxy = random.choice(proxies)
         # proxy=proxies[1]
         proxy_string = f"{proxy['ip']}:{proxy['port']}"
-        
+        #10650
         userName = proxy["userName"]
         password = proxy["password"]
         ip = proxy["ip"]
@@ -154,12 +154,12 @@ def create_gmail_account(
         user_agent = UserAgent(browsers=['chrome'])
         chrome_options = Options()
 
-        chrome_options.add_argument("--headless")
+        #chrome_options.add_argument("--headless")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--disable-extensions")
-        chrome_options.add_argument(f'--proxy-server={proxy_string}')
+        #chrome_options.add_argument(f'--proxy-server={proxy_string}')
         
         # # Add additional arguments to prevent detection
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
