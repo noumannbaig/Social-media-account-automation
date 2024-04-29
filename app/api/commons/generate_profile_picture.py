@@ -6,7 +6,7 @@ import openai
 import boto3
 import requests
 OPENAI_API_KEY = "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"
-VYRO_API_TOKEN = "vk-d03d1cm4D2037JekVadF2DwBF0AF4SLyBV2f6SZ92U2ssKeb"
+VYRO_API_TOKEN = "vk-gqFDUE4p8zvMk44b2isFI4kMgPbixmb6Y84XYOoEEsxc3U"
 BUCKET_NAME = "phazaavatars"
 openai.api_key = OPENAI_API_KEY
 s3_client = boto3.client(

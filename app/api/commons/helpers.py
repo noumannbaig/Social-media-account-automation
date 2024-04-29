@@ -4,7 +4,7 @@ import boto3
 from fastapi import HTTPException
 
 BUCKET_NAME = "phazaavatars"
-VYRO_API_TOKEN = "vk-JsWBLsMOPeEGpOH239dDMsqvbshykT4CAmA1l1zjXt7iGx"
+VYRO_API_TOKEN = "vk-gqFDUE4p8zvMk44b2isFI4kMgPbixmb6Y84XYOoEEsxc3U"
 
 
 def clean_name(name):
