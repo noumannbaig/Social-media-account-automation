@@ -129,10 +129,10 @@ def create_gmail_account(
         
 
         # Choose a random proxy from the list
-        proxy=random_proxy()
+        # proxy=random_proxy()
 
         # proxy = random.choice(proxies)
-        # proxy=proxies[1]
+        proxy=proxies[5]
         proxy_string = f"{proxy['ip']}:{proxy['port']}"
         #10650
         userName = proxy["userName"]
@@ -146,7 +146,7 @@ def create_gmail_account(
             "proxy": {
                 "http": f"http://{userName}:{password}@{ip}:{port}",
                 "https": f"https://{userName}:{password}@{ip}:{port}",
-                "no_proxy": "*.soax.com, localhost, 127.0.0.1,*.froxy.com",
+                "no_proxy": "*.soax.com, localhost, 127.0.0.1,*.froxy.com,*smartproxy.com",
             }
         }
 
@@ -342,7 +342,7 @@ def create_gmail_account(
         sms=0
         try:
             # Find the phone number input field and enter the phone number
-            # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "phoneNumberId")))
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "phoneNumberId")))
             retry_count = 5
             for _ in range(retry_count):
                 # country = get_countries()
@@ -361,14 +361,14 @@ def create_gmail_account(
                     if phone_number['error_code'] =="no_numbers":
                         retry_count_1=5
                         for _ in range(retry_count_1):
-                            country=get_all_countries_v2()
-                            phone_number=get_numbers_v2(country,122)
+                            country=187
+                            phone_number=get_phone_number(country)
                             try:
-                                if phone_number['error_code'] =="no_numbers":
+                                if phone_number[0] ==None:
                                     continue
                             except:
                                 pass
-                            sms=get_sms_v2(phone_number['request_id'])
+                            sms=get_activation(phone_number[1])
                             if sms =="":
                                 continue
                         

@@ -45,13 +45,13 @@ from smsactivate.api import SMSActivateAPI
 sa = SMSActivateAPI("5A4d3c4bf78e985931312ffc94e29389")
 sms_activate_url = "https://sms-activate.org/stubs/handler_api.php"
 phone_request_params = {
-    "api_key": "5A4d3c4bf78e985931312ffc94e29389",
+    "api_key": "ee9b7b86ee80d5373f5c1361067dA517",
     "action": "getNumber",
     "country": 47,
     "service": "go",
 }
 
-status_param = {"api_key": "5A4d3c4bf78e985931312ffc94e29389", "action": "getStatus"}
+status_param = {"api_key": "ee9b7b86ee80d5373f5c1361067dA517", "action": "getStatus"}
 
 
 def get_phone_number(country: int):
