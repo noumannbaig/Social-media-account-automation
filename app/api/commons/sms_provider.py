@@ -42,7 +42,7 @@ def get_sms_activation(orderId: int):
 from smsactivate.api import SMSActivateAPI
 
 # SMSActivateAPI Contains all basic tools for working with the SMSActivate API
-sa = SMSActivateAPI("5A4d3c4bf78e985931312ffc94e29389")
+sa = SMSActivateAPI("0e931580379e03b801fe03230Ae2021f")
 sms_activate_url = "https://sms-activate.org/stubs/handler_api.php"
 phone_request_params = {
     "api_key": "0e931580379e03b801fe03230Ae2021f",
@@ -101,7 +101,30 @@ def get_activation(activationId):
     if code == "":
         print("Cannot receive code from sms_activate: ", 5, " times retrial")
         return ""
+def get_code(id: str):
+    # Construct the API URL for checking the activation status
+    url = f"https://api.sms-activate.org/stubs/handler_api.php?api_key=0e931580379e03b801fe03230Ae2021f&action=getStatus&id={id}"
 
+    import time
+    start_time = time.time()
+
+    # Wait and poll for the verification code
+    while time.time() - start_time < 180:
+        response = requests.get(url)
+        if response.status_code != 200:
+            return ""
+
+        response_content = response.text
+
+        if response_content.startswith("STATUS_OK"):
+            # Extract the code from the response
+            code = response_content.split(":")[1]
+            return code
+
+        # Sleep for a short interval before checking again
+        time.sleep(10)
+
+    return ""
 
 def get_countries():
     return sa.getCountries()

@@ -7,6 +7,7 @@ from app.api.commons.sms_provider import (
     find_country_by_name,
     get_activation,
     get_all_countries_v2,
+    get_code,
     get_countries,
     get_countries_v2,
     get_numbers_v2,
@@ -368,7 +369,7 @@ def create_gmail_account(
                                     continue
                             except:
                                 pass
-                            sms=get_activation(phone_number[1])
+                            sms=get_code(phone_number[1])
                             if sms =="":
                                 continue
                         
