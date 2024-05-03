@@ -35,7 +35,7 @@ class AvatarGmailBase(BaseModel):
     is_valid: str
     last_validation: Optional[datetime]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 class AvatarPlatformBase(BaseModel):
@@ -49,7 +49,7 @@ class AvatarPlatformBase(BaseModel):
     is_valid: Optional[str]
     last_validation: Optional[datetime]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 class ValidatedAvatarBase(AvatarBase):
@@ -73,7 +73,7 @@ class AvatarBaseInsert(ValidatedAvatarBase):
     """Avatar base model for create operation."""
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
@@ -85,7 +85,7 @@ class AvatarResponse(AvatarBase):
     creation_date: datetime
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 

@@ -11,6 +11,7 @@ from fastapi import status
 from pydantic import BaseModel, Field, conint, validator
 from pydantic.generics import GenericModel
 
+
 DataT = TypeVar("DataT")
 
 
@@ -60,7 +61,7 @@ class MetaInfoModel(BaseModel):
 
     class Config:
         alias_generator = to_camel
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class ResponseError(BaseModel):
@@ -115,7 +116,7 @@ class Pagination(BaseModel):
 
     class Config:
         alias_generator = to_camel
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class ResponseEnvelope(GenericModel, Generic[DataT]):
@@ -136,7 +137,7 @@ class ResponseEnvelope(GenericModel, Generic[DataT]):
         return error
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         
 
 
@@ -158,7 +159,7 @@ class OrderParameters(BaseModel):
     order_by: Optional[str] = Field(default="createTime:desc", alias="orderBy")
 
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
 
 
 class PaginationParameters(BaseModel):
@@ -171,3 +172,9 @@ class PaginationParameters(BaseModel):
 
     page: Optional[conint(gt=0)] = 1
     size: Optional[conint(gt=0)] = 25
+
+
+class ActionResponse(BaseModel):
+    data: dict
+    success: bool
+    detail: str

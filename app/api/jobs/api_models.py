@@ -36,7 +36,7 @@ class SchedulerResponse(BaseModel):
     scheduler_status:Optional[str]
     scheduler_no:uuid.UUID
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 class SchedulerTaskResponse(BaseModel):
@@ -49,7 +49,7 @@ class SchedulerTaskResponse(BaseModel):
     scheduler_task_status_id:Optional[int]
     status_code:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 

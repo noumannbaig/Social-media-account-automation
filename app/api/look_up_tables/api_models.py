@@ -13,7 +13,7 @@ class CountriesBase(BaseModel):
     desc_en:str
     desc_ar:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
@@ -24,7 +24,7 @@ class PlatformsBase(BaseModel):
     desc_en:str
     desc_ar:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
@@ -34,7 +34,7 @@ class ProvidersBase(BaseModel):
     desc_en:str
     desc_ar:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
@@ -45,7 +45,7 @@ class NationalityBase(BaseModel):
     desc_en:str
     desc_ar:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
@@ -56,7 +56,7 @@ class GenderBase(BaseModel):
     desc_en:str
     desc_ar:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
@@ -67,7 +67,7 @@ class LanguageBase(BaseModel):
     desc_en:str
     desc_ar:Optional[str]
     class Config:
-        allow_population_by_field_name = True
+        populate_by_name = True
         alias_generator = to_camel
         orm_mode = True
 
