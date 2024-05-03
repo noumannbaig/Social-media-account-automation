@@ -1,5 +1,6 @@
 import csv
 from io import StringIO
+import select
 import string
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
@@ -68,7 +69,7 @@ def create_avatar(db: Session, avatars: AvatarBaseInsert) -> Avatar:
     return db_user
 
 
-def get_avatar_by_id(session: Session, id: UUID) -> Avatar:
+def get_avatar_by_id(session: Session, id: int) -> Avatar:
     """Get avatar group entity by id.
 
     Args:
@@ -681,11 +682,19 @@ def generate_users_v2(
     group_entity = session.query(AvatarGroup).filter(AvatarGroup.id==request.group).first()
     nationality_entity = session.query(Nationalities).filter(Nationalities.id==request.nationality).first()
     db_relationship_status=session.query(RelationshipStatuses).filter(RelationshipStatuses.id.in_(request.relationship_status)).all()
+    query = select(Avatar.first_name)
+    
+    
+    # Execute the query
+    result = session.execute(query)
+    
+    # Fetch all the first names from the result
+    first_names = [row[0] for row in result]    
     try:
         for _ in range(request.number_of_users):
 
-            first_name_prompt = f"Generate a common first name {gender_entity.desc_en} in {country_entity.desc_en}:"
-            last_name_prompt = f"Generate a common max 7 charcthers last name in {country_entity.desc_en}:"
+            first_name_prompt = f"Generate a random first name {gender_entity.desc_en} in {country_entity.desc_en} exclclude all the names present in list provided {first_names}:"
+            last_name_prompt = f"Generate a random max 7 charcthers last name in {country_entity.desc_en}:"
 
             # Use custom prompts for generating first and last names
             first_name_response = openai.Completion.create(
@@ -704,14 +713,14 @@ def generate_users_v2(
 
             bio_response = openai.Completion.create(
                 engine="gpt-3.5-turbo-instruct-0914",
-                prompt=f"Write a short {request.bio_type} bio for a {gender_entity.desc_en} named {first_name} interested in {group_entity.groupDesc}:",
+                prompt=f"Write a short {request.bio_type} bio for a {gender_entity.desc_en} named {first_name} interested in {group_entity.groupDesc} max 15 words:",
                 max_tokens=50,
             )
             bio = bio_response.choices[0].text.strip()
 
             position_response = openai.Completion.create(
                 engine="gpt-3.5-turbo-instruct-0914",
-                prompt=f"Generate a position title for someone in the {group_entity} group:",
+                prompt=f"Generate a random position title for someone in the {group_entity} group:",
                 max_tokens=10,
             )
             position = position_response.choices[0].text.strip()
