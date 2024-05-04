@@ -326,7 +326,22 @@ def delete_Avatar(
     """Endpoint for deleting a single AvatarGroup data by id."""
 
     service.delete_avatar_bulk(session, id)
-    return ResponseEnvelope(data="Record deleted Successfully")
+    return ResponseEnvelope(data="Avatar deleted Successfully")
+
+@router.delete(
+    path="/{id}",
+    response_model=ResponseEnvelope,
+    operation_id="deleteAvatarById",
+    summary="Delete Avatar Data by id.",
+    status_code=status.HTTP_200_OK,
+)
+def delete_avatar(
+    id: int,
+    session: Session = Depends(get_db),
+):
+    """Endpoint for deleting a single Avatar data by id."""
+    service.delete_avatar(session, id)
+    return ResponseEnvelope(data="Avatar deleted Successfully")
 
 @router.put(
     path="",

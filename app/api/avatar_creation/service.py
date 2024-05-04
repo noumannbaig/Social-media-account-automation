@@ -39,6 +39,9 @@ from app.api.commons.api_models import (
     OrderParameters,
     PaginationParameters,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 OPENAI_API_KEY = "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"
 openai.api_key = OPENAI_API_KEY
@@ -322,25 +325,25 @@ def get_avatars(
 
 
 def delete_avatar_bulk(session: Session, ids: List[int]) -> None:
-    """Delete a Contact Us entity.
+    for id in ids:
+        try:
+            db_data = get_avatar_by_id(session, id)
+            delete_entity(db_data, session)
+        except Exception as e:
+            logger.error(f"Error deleting avatar with ID: {id}. Error: {str(e)}")
+    session.commit()  # Make sure to commit the session after making changes
+
+
+def delete_avatar(session: Session, id: int) -> None:
+    """Delete a single Avatar entity.
 
     Args:
         session (Session): Current SQLAlchemy session.
-        definition_id (UUID): Id of an already existing FTD entity.
-        id (UUID): Id of an existing contact us  entity.
+        id (int): Id of an already existing Avatar entity.
     """
-    for id in ids:
-        db_data = get_avatar_by_id(session, id)
-        #     for av_pl in db_data.avatar_platforms:
-        #         delete_entity(av_pl, session)
-        #     for av_em in db_data.avatar_emails:
-        #         delete_entity(av_em, session)
-        #     for av_l in db_data.avatar_languages:
-        #         delete_entity(av_l, session)
-        #     for av_pl in db_data.avatar_platforms:
-        #         delete_entity(av_l, session)
-        delete_entity(db_data, session)
-        
+    db_data = get_avatar_by_id(session, id)
+    delete_entity(db_data, session)
+    session.commit()        
         
     
 
