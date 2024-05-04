@@ -51,3 +51,8 @@ class AvatarGroupResponse(AvatarGroupBase):
         allow_population_by_field_name = True
         alias_generator = to_camel
         orm_mode = True
+
+class ActionResponse(BaseModel):
+    data: dict
+    success: bool
+    detail: str

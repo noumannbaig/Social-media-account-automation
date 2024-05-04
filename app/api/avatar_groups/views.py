@@ -124,12 +124,7 @@ def delete_AvatarGroup__(
 ):
     """Endpoint for deleting a single AvatarGroup by id."""
 
-    service.delete_avatar_group(session, id)
-    return ActionResponse(
-        data={},
-        success=True,
-        detail="Avatar Group deleted successfully"
-    )
+    return service.delete_avatar_group(session, id)
 
 
 
