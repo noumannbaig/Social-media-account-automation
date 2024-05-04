@@ -13,6 +13,7 @@ from app.api.commons.api_models import (
     Pagination,
     PaginationParameters,
     ResponseEnvelope,
+    ActionResponse,
 )
 
 router = APIRouter()
@@ -20,9 +21,9 @@ router = APIRouter()
 
 @router.post(
     path="",
-    response_model=ResponseEnvelope,
+    response_model=ActionResponse,
     operation_id="createAvatarGroup",
-    summary="Create AvatarGroup   Data.",
+    summary="Create AvatarGroup Data.",
     status_code=status.HTTP_201_CREATED,
 )
 def create(
@@ -31,8 +32,11 @@ def create(
 ):
     AvatarGroup_response = service.create_avatar_groups(db, client)
     response_data = AvatarGroupResponse.from_orm(AvatarGroup_response)
-    AvatarGroup_response = ResponseEnvelope(data=response_data)
-    return AvatarGroup_response
+    return ActionResponse(
+        data=response_data.dict(),
+        success=True,
+        detail="Avatar Group created successfully"
+    )
 
 
 @router.get(
@@ -102,29 +106,33 @@ def read_AvatarGroup_by_id(
 
 @router.delete(
     path="/{id}",
-    response_model=ResponseEnvelope,
+    response_model=ActionResponse,
     response_model_exclude_none=True,
     operation_id="deleteAvatarGroupById",
-    summary="Delete AvatarGroup Data by id.",
+    summary="Delete AvatarGroup data by id.",
     status_code=status.HTTP_200_OK,
 )
 def delete_AvatarGroup__(
     id: int,
     session: Session = Depends(get_db),
 ):
-    """Endpoint for deleting a single AvatarGroup data by id."""
+    """Endpoint for deleting a single AvatarGroup by id."""
 
     service.delete_avatar_group(session, id)
+    return ActionResponse(
+        data={},
+        success=True,
+        detail="Avatar Group deleted successfully"
+    )
 
-    return ResponseEnvelope(data="Record deleted")
 
 
 @router.put(
     path="/{id}",
-    response_model=ResponseEnvelope,
+    response_model=ActionResponse,
     response_model_exclude_none=True,
     operation_id="putAvatarGroupById",
-    summary="Update AvatarGroup  by id.",
+    summary="Update AvatarGroup by id.",
     status_code=status.HTTP_200_OK,
 )
 def update_AvatarGroup__(
@@ -132,9 +140,33 @@ def update_AvatarGroup__(
     AvatarGroup_update: AvatarGroupBaseInsert = Body(...),
     session: Session = Depends(get_db),
 ):
-    """Endpoint for updating single AvatarGroup   Data by id."""
+    """Endpoint for updating single AvatarGroup Data by id."""
 
     response = service.update_avatar_group(session, id, AvatarGroup_update)
     response_data = AvatarGroupResponse.from_orm(response)
-    response = ResponseEnvelope(data=response_data)
-    return response
+    return ActionResponse(
+        data=response_data.dict(),
+        success=True,
+        detail="Avatar Group updated successfully"
+    )
+
+
+@router.delete(
+    path="/bulk/delete",
+    response_model=ActionResponse,
+    operation_id="bulkDeleteAvatarGroup",
+    summary="Bulk delete AvatarGroup data.",
+    status_code=status.HTTP_200_OK,
+)
+def bulk_delete_avatar_group(
+    ids: List[int] = Body(...),
+    session: Session = Depends(get_db),
+):
+    """Endpoint for bulk deleting AvatarGroup data."""
+
+    service.bulk_delete_avatar_groups(session, ids)
+    return ActionResponse(
+        data={},
+        success=True,
+        detail="Avatar Group deleted successfully"
+    )

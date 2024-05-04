@@ -160,3 +160,16 @@ def update_avatar_group(
         setattr(db_data, key, value)
         update_session(db_data, session)
     return db_data
+
+
+def bulk_delete_avatar_groups(session: Session, ids: List[int]) -> None:
+    """Delete multiple AvatarGroup entities.
+
+    Args:
+        session (Session): Current SQLAlchemy session.
+        ids (List[int]): List of IDs of existing avatar group entities to be deleted.
+    """
+    query = session.query(AvatarGroup).filter(AvatarGroup.id.in_(ids))
+    db_data = query.all()
+    for entity in db_data:
+        delete_entity(entity, session)

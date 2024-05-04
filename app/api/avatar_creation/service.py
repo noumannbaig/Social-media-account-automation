@@ -692,8 +692,8 @@ def generate_users_v2(
     try:
         for _ in range(request.number_of_users):
 
-            first_name_prompt = f"Generate a random first name {gender_entity.desc_en} in {country_entity.desc_en} exclclude all the names present in list provided {first_names}:"
-            last_name_prompt = f"Generate a random max 7 charcthers last name in {country_entity.desc_en}:"
+            first_name_prompt = f"Generate a Unique first name {gender_entity.desc_en} in {country_entity.desc_en} exclclude all the names present in list provided {first_names}:"
+            last_name_prompt = f"Generate a Unique max 7 charcthers last name in {country_entity.desc_en}:"
 
             # Use custom prompts for generating first and last names
             first_name_response = openai.Completion.create(
@@ -712,14 +712,14 @@ def generate_users_v2(
 
             bio_response = openai.Completion.create(
                 engine="gpt-3.5-turbo-instruct-0914",
-                prompt=f"Write a short {request.bio_type} bio for a {gender_entity.desc_en} named {first_name} interested in {group_entity.groupDesc} max 15 words:",
+                prompt=f"Write a Short {request.bio_type} bio for a {gender_entity.desc_en} named {first_name} interested in {group_entity.groupDesc} with max 15 words:",
                 max_tokens=50,
             )
             bio = bio_response.choices[0].text.strip()
 
             position_response = openai.Completion.create(
                 engine="gpt-3.5-turbo-instruct-0914",
-                prompt=f"Generate a random position title for someone in the {group_entity} group:",
+                prompt=f"Generate a Random position title for someone in the {group_entity}:",
                 max_tokens=10,
             )
             position = position_response.choices[0].text.strip()

@@ -524,3 +524,4 @@ def export_avatar_to_csv(db: Session = Depends(get_db)):
     response.headers["Content-Disposition"] = f"attachment; filename=avatar_data.csv"
     return response
     
+

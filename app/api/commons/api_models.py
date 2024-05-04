@@ -11,6 +11,7 @@ from fastapi import status
 from pydantic import BaseModel, Field, conint, validator
 from pydantic.generics import GenericModel
 
+
 DataT = TypeVar("DataT")
 
 
@@ -171,3 +172,9 @@ class PaginationParameters(BaseModel):
 
     page: Optional[conint(gt=0)] = 1
     size: Optional[conint(gt=0)] = 25
+
+
+class ActionResponse(BaseModel):
+    data: dict
+    success: bool
+    detail: str
