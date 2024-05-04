@@ -14,6 +14,8 @@ from app.api.avatar_creation.api_models import (
     FacebookAcount,
     GoogleAccount,
     InstaAccount,
+    AvatarPlatformUpdate,
+    AvatarGmailEdit,
 )
 from app.api.avatar_creation import service
 from sqlalchemy.orm import Session
@@ -67,6 +69,37 @@ def create_avatar_gmail(
     AvatarGroup_response = ResponseEnvelope(data=avatar)
     return AvatarGroup_response
 
+@router.put(
+    path="/gmail/{id}",
+    response_model=ResponseEnvelope,
+    operation_id="updateGmailById",
+    summary="Update Avatar Gmail by ID.",
+    status_code=status.HTTP_200_OK,
+)
+def update_avatar_gmail(
+    id: int,
+    gmail_update: AvatarGmailEdit = Body(...),
+    session: Session = Depends(get_db),
+):
+    """Update a Gmail account by ID."""
+    response = service.update_avatar_gmail(session, id, gmail_update)
+    return ResponseEnvelope(data=response)
+
+@router.delete(
+    path="/gmail/{id}",
+    response_model=ResponseEnvelope,
+    operation_id="deleteGmailById",
+    summary="Delete Gmail Account by ID.",
+    status_code=status.HTTP_200_OK,
+)
+def delete_avatar_gmail(
+    id: int,
+    session: Session = Depends(get_db),
+):
+    """Delete a Gmail account by ID."""
+    response = service.delete_avatar_gmail(session, id)
+    return ResponseEnvelope(data=response)
+
 @router.post(
     path="/platform",
     response_model=ResponseEnvelope,
@@ -81,6 +114,39 @@ def create_avatar_platform(
     Avatar_response = service.generate_user_platform(db, avatar)
     AvatarGroup_response = ResponseEnvelope(data=avatar)
     return AvatarGroup_response
+
+@router.put(
+    path="/platform/{id}",
+    response_model=ResponseEnvelope,
+    operation_id="updateAvatarPlatform",
+    summary="Update Avatar Platform.",
+    status_code=status.HTTP_200_OK,
+)
+def update_avatar_platform(
+    id: int,
+    platform_update: AvatarPlatformUpdate = Body(...),
+    db: Session = Depends(get_db),
+):
+    """Update a platform by ID."""
+    response = service.update_avatar_platform(db, id, platform_update)
+    return ResponseEnvelope(data=response)
+
+@router.delete(
+    path="/platform/{id}",
+    response_model=ResponseEnvelope,
+    operation_id="deleteAvatarPlatform",
+    summary="Delete Avatar Platform by ID.",
+    status_code=status.HTTP_200_OK,
+)
+def delete_avatar_platform(
+    id: int,
+    session: Session = Depends(get_db),
+):
+    """Delete a platform by ID."""
+    response = service.delete_avatar_platform(session, id)
+    return ResponseEnvelope(data=response)
+
+
 # @router.post(
 #     path="",
 #     response_model=ResponseEnvelope,

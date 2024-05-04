@@ -31,7 +31,7 @@ from app.api.commons.helpers import (
     generate_complex_password,
     generate_profile_picture,
 )
-from app.api.avatar_creation.api_models import AvatarBaseInsert, AvatarEmail, AvatarGenerate, AvatarGenerateManual, AvatarPlatformAdd
+from app.api.avatar_creation.api_models import AvatarBaseInsert, AvatarEmail, AvatarGenerate, AvatarGenerateManual, AvatarPlatformAdd, AvatarPlatformBase, AvatarPlatformUpdate, AvatarGmailEdit
 from app.api.jobs.db_models import Schedulers
 from app.database.session import update_session, delete_entity
 from app.api.commons.api_models import (
@@ -919,3 +919,61 @@ def export_avatar_to_csv( db: Session):
     csv_data.seek(0)
     
     return csv_data
+
+
+def update_avatar_platform(
+    session: Session, id: int, platform_update: AvatarPlatformUpdate
+) -> str:
+    try:
+        platform = session.query(AvatarPlatform).filter(AvatarPlatform.id == id).one_or_none()
+
+        if not platform:
+            raise HTTPException(status_code=404, detail="Platform not found")
+
+        # Update the specific fields
+        platform.email = platform_update.email
+        platform.password = platform_update.password
+        platform.platform_id = platform_update.platform_id[0]  # Assuming a single platform ID
+
+        session.commit()
+        return f"Avatar platform edited successfully"
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"A programming error occurred on the database: {str(e)}")
+
+def delete_avatar_platform(session: Session, id: int) -> str:
+    platform = session.query(AvatarPlatform).filter(AvatarPlatform.id == id).one_or_none()
+
+    if not platform:
+        raise HTTPException(status_code=404, detail="Platform not found")
+
+    session.delete(platform)
+    session.commit()
+
+    return f"Avatar platform deleted successfully"
+
+def update_avatar_gmail(
+    session: Session, id: int, gmail_update: AvatarGmailEdit
+) -> str:
+    """Update a Gmail account entity."""
+    gmail_account = session.query(AvatarEmails).filter(AvatarEmails.id == id).one_or_none()
+
+    if not gmail_account:
+        raise HTTPException(status_code=404, detail="Gmail account not found")
+
+    for key, value in gmail_update.dict(exclude_unset=True).items():
+        setattr(gmail_account, key, value)
+
+    session.commit()
+
+    return f"Email edited successfully"
+
+def delete_avatar_gmail(session: Session, id: int) -> str:
+    gmail_account = session.query(AvatarEmails).filter(AvatarEmails.id == id).one_or_none()
+
+    if not gmail_account:
+        raise HTTPException(status_code=404, detail="Gmail account not found")
+
+    session.delete(gmail_account)
+    session.commit()
+
+    return f"Email deleted successfully"

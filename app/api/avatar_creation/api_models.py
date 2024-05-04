@@ -6,6 +6,8 @@ from datetime import date, datetime
 from enum import Enum
 from app.api.commons.api_models import to_camel
 from typing import Optional
+from typing import List
+
 
 
 class AvatarBase(BaseModel):
@@ -161,3 +163,19 @@ class ScheduleAvatarDashbaord(BaseModel):
     email_availibilty: int 
     platform_availabity: int
     errors:int
+
+class AvatarPlatformUpdate(BaseModel):
+    email: str
+    password: str
+    platform_id: List[int]
+
+    class Config:
+        orm_mode = True
+
+class AvatarGmailEdit(BaseModel):
+    username: str
+    password: str
+    email_provider_id: Optional[int]
+
+    class Config:
+        orm_mode = True
