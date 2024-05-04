@@ -67,7 +67,7 @@ def get_phone_number(country: int):
 
             number = "+" + number
             print(number)
-            return [number, activationId]
+            return {"number":number, "activation":activationId}
 
         if "NO_BALANCE" in data:
             print("Check your Balance in sms-activate.")
@@ -80,7 +80,7 @@ def get_phone_number(country: int):
                 5,
                 " times retrial. ################",
             )
-            return
+            return 
 
 
 def get_activation(activationId):
@@ -119,7 +119,7 @@ def get_code(id: str):
         if response_content.startswith("STATUS_OK"):
             # Extract the code from the response
             code = response_content.split(":")[1]
-            return code
+            return {"sms_code":code}
 
         # Sleep for a short interval before checking again
         time.sleep(10)

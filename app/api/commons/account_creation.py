@@ -355,23 +355,25 @@ def create_gmail_account(
                 # phone_input.send_keys(phone_number[0])
 
                 # activationId = phone_number[1]
-                name=proxy['country']
-                country=get_countries_v2(name)
-                phone_number=get_numbers_v2(country,122)
+                country=187
+                phone_number=get_phone_number(country)
                 try:
-                    if phone_number['error_code'] =="no_numbers":
+                    if  phone_number ==None:
                         retry_count_1=5
                         for _ in range(retry_count_1):
-                            country=187
-                            phone_number=get_phone_number(country)
+                            name=proxy['country']
+                            country=get_countries_v2(name)
+                            phone_number=get_numbers_v2(country,122)
                             try:
-                                if phone_number[0] ==None:
+                                if phone_number['error_code'] =="no_numbers":
                                     continue
                             except:
                                 pass
-                            sms=get_code(phone_number[1])
+                            sms=get_sms_v2(phone_number['request_id'])
                             if sms =="":
                                 continue
+                            else:
+                                break
                         
                 except Exception as e: 
                     pass
@@ -408,8 +410,8 @@ def create_gmail_account(
                 
                 # while True:
                     #sms = get_activation(activationId)
-                sms=get_sms_v2(phone_number['request_id'])
-
+                # sms=get_sms_v2(phone_number['request_id'])
+                sms=get_code(phone_number['activation'])
                 if sms =="":
                     try:
                         # Wait for the button to be clickable

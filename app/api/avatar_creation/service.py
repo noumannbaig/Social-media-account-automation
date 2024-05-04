@@ -682,14 +682,13 @@ def generate_users_v2(
     group_entity = session.query(AvatarGroup).filter(AvatarGroup.id==request.group).first()
     nationality_entity = session.query(Nationalities).filter(Nationalities.id==request.nationality).first()
     db_relationship_status=session.query(RelationshipStatuses).filter(RelationshipStatuses.id.in_(request.relationship_status)).all()
-    query = select(Avatar.first_name)
+    query = session.query(Avatar).all()
     
     
     # Execute the query
-    result = session.execute(query)
     
     # Fetch all the first names from the result
-    first_names = [row[0] for row in result]    
+    first_names = [row.first_name for row in query]    
     try:
         for _ in range(request.number_of_users):
 
