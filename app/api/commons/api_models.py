@@ -61,7 +61,7 @@ class MetaInfoModel(BaseModel):
 
     class Config:
         alias_generator = to_camel
-        populate_by_name = True
+        allow_population_by_field_name = True
 
 
 class ResponseError(BaseModel):
@@ -116,7 +116,7 @@ class Pagination(BaseModel):
 
     class Config:
         alias_generator = to_camel
-        populate_by_name = True
+        allow_population_by_field_name = True
 
 
 class ResponseEnvelope(GenericModel, Generic[DataT]):
@@ -137,7 +137,7 @@ class ResponseEnvelope(GenericModel, Generic[DataT]):
         return error
 
     class Config:
-        populate_by_name = True
+        allow_population_by_field_name = True
         
 
 
@@ -159,7 +159,7 @@ class OrderParameters(BaseModel):
     order_by: Optional[str] = Field(default="createTime:desc", alias="orderBy")
 
     class Config:
-        populate_by_name = True
+        allow_population_by_field_name = True
 
 
 class PaginationParameters(BaseModel):
