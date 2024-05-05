@@ -6,7 +6,7 @@ from typing import Tuple, List
 from datetime import datetime, timezone
 from app.api.avatar_creation.db_models import Avatar
 from app.api.avatar_groups.db_models import AvatarGroup
-from app.api.avatar_groups.api_models import AvatarGroupBaseInsert
+from app.api.avatar_groups.api_models import AvatarGroupBaseInsert, ActionResponse
 from app.database.session import update_session, delete_entity
 from app.api.commons.api_models import (
     GenericFilterParameters,
@@ -127,16 +127,26 @@ def get_avatar_groups(
     return contacted_users, total_pages, total_count
 
 
-def delete_avatar_group(session: Session, id: UUID) -> None:
-    """Delete a Contact Us entity.
+def delete_avatar_group(session: Session, id: int) -> ActionResponse:
+    """Delete an AvatarGroup entity, but prevent deletion if it contains avatars."""
 
-    Args:
-        session (Session): Current SQLAlchemy session.
-        definition_id (UUID): Id of an already existing FTD entity.
-        id (UUID): Id of an existing contact us  entity.
-    """
     db_data = get_avatargroup_by_id(session, id)
+    
+    # Check if there are associated avatars
+    associated_avatars = session.query(Avatar).filter(Avatar.avatar_group_id == id).count()
+    if associated_avatars > 0:
+        return ActionResponse(
+            data={},
+            success=False,
+            detail="The avatar group contains avatars and cannot be deleted."
+        )
+
     delete_entity(db_data, session)
+    return ActionResponse(
+        data={},
+        success=True,
+        detail="Avatar Group deleted successfully."
+    )
 
 
 def update_avatar_group(

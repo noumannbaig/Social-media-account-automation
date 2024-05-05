@@ -6,6 +6,7 @@ from app.api.avatar_groups import service
 from sqlalchemy.orm import Session
 from app.database.session import get_db
 from app.api.commons.api_models import ResponseEnvelope, status
+from app.api.avatar_creation.db_models import Avatar
 
 from app.api.commons.api_models import (
     GenericFilterParameters,
@@ -32,6 +33,11 @@ def create(
 ):
     AvatarGroup_response = service.create_avatar_groups(db, client)
     response_data = AvatarGroupResponse.from_orm(AvatarGroup_response)
+
+    # Count the number of avatars associated with the group
+    num_of_avatars = db.query(Avatar).filter(Avatar.avatar_group_id == response_data.id).count()
+    response_data.no_of_avatars = num_of_avatars
+
     return ActionResponse(
         data=response_data.dict(),
         success=True,
@@ -118,12 +124,7 @@ def delete_AvatarGroup__(
 ):
     """Endpoint for deleting a single AvatarGroup by id."""
 
-    service.delete_avatar_group(session, id)
-    return ActionResponse(
-        data={},
-        success=True,
-        detail="Avatar Group deleted successfully"
-    )
+    return service.delete_avatar_group(session, id)
 
 
 
