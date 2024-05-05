@@ -2,6 +2,7 @@ import json
 from typing import Optional
 
 from httpcore import TimeoutException
+import requests
 from app.api.commons.proxies_list import random_proxy
 from app.api.commons.sms_provider import (
     find_country_by_name,
@@ -133,6 +134,18 @@ def create_gmail_account(
         # proxy=random_proxy()
 
         # proxy = random.choice(proxies)
+        url = "http://dev-proxymgmtservice.phaza.ai/api/v1/proxy/proxies"
+        params = {
+        "country_id": 106,
+        "status_id": 1,
+        "proxy_type_id": 1
+        }
+        try:
+            response = requests.get(url, params=params)
+            response.raise_for_status()  # Raise an exception for 4xx or 5xx status codes
+            return response.json()
+        except requests.RequestException as e:
+            pass
         proxy=proxies[5]
         proxy_string = f"{proxy['ip']}:{proxy['port']}"
         #10650
